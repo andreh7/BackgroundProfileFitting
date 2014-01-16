@@ -20,17 +20,17 @@ r.gStyle.SetOptTitle(0)
 
 ranges={}
 ranges["mu"]=(-5,5)
-ranges["pullMu"]=(-0.1,0.1)
+ranges["pull"]=(-0.1,0.1)
 ranges["pullBkg"]=(-0.1,0.1)
-ranges["errMu"]=(0,4)
+ranges["err"]=(0,4)
 ranges["errBkg"]=(0,1)
 
 drawRanges={}
 drawRanges["mu"]=(-2,2)
-drawRanges["pullMu"]=(-2,2)
+drawRanges["pull"]=(-2,2)
 drawRanges["pullBkg"]=(-2,2)
 drawRanges["errBkg"]=(0,0.5)
-drawRanges["errMu"]=(0,4)
+drawRanges["err"]=(0,4)
 
 colorMap={}
 colorMap['exp1']=r.kRed
@@ -51,10 +51,10 @@ colorMap['pol6']=r.kRed-9
 colorMap['pol7']=r.kGreen-7
 
 labelMap={}
-labelMap['pullMu']='#mu pull'
+labelMap['pull']='#mu pull'
 labelMap['pullBkg']='bkg in 1FWHM pull'
 labelMap['mu']='#mu'
-labelMap['errMu']='#sigma_{#mu} from fit'
+labelMap['err']='#sigma_{#mu} from fit'
 labelMap['errBkg']='#sigma_{bkg} from fit'
 
 def getMaximumBias(graph):
@@ -98,7 +98,7 @@ def drawHists():
     if muC not in muConstr: muConstr.append(muC)
     if mass not in masses: masses.append(mass)
     if plot not in plot_types: plot_types.append(plot)
-  plot_types= ['mu']
+
   print "CATEGORIES: "+str(cats)
   print "TRUTH MODELS:"+str(truth_mods)
   print "TEST MODELS: "+str(test_mods)
@@ -213,6 +213,7 @@ def drawGraph(cat=0,truth="exp1",test="exp1",mu="0.0",muC="0.0",plot="pull",mass
   i=0
   print "+++++++ PLOT_TYPE "+str(plot)
   for mass in masses:
+    print "cat%d_truth_%s_test_%s_muInj_%s_muConstr_%s_mass_%d_%s"%(int(cat.lstrip('cat')),truth,test,str(mu),str(muC),int(mass),plotType)
     h=file.Get("cat%d_truth_%s_test_%s_muInj_%s_muConstr_%s_mass_%d_%s"%(int(cat.lstrip('cat')),truth,test,str(mu),str(muC),int(mass),plotType))
     print str(h.GetName())+"\t"+str(h.GetMean())+"\t"+str(h.GetRMS())
     h.GetXaxis().SetRangeUser(ranges[plot][0],ranges[plot][1])
