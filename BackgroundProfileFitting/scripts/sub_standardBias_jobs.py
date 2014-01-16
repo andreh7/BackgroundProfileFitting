@@ -131,6 +131,8 @@ else:
       mhigh = float(lineConfig[3].split('=')[1])
 #      mstep = float(lineConfig[4].split('=')[1])
       injectmass = int(lineConfig[4].split('=')[1])
+      constrainMu = 0
+      constrainMuWidth = 0
       if (len(lineConfig)>5):
         constrainMu = int(lineConfig[5].split('=')[1])
         constrainMuWidth = float(lineConfig[6].split('=')[1])

@@ -98,7 +98,7 @@ def drawHists():
     if muC not in muConstr: muConstr.append(muC)
     if mass not in masses: masses.append(mass)
     if plot not in plot_types: plot_types.append(plot)
-
+  plot_types= ['mu']
   print "CATEGORIES: "+str(cats)
   print "TRUTH MODELS:"+str(truth_mods)
   print "TEST MODELS: "+str(test_mods)
@@ -134,7 +134,8 @@ def drawHists():
             text.SetTextAlign(12)
             text.SetTextSize(0.04)
             if (not options.additionalText == ""):
-              text.DrawTextNDC(0.71,0.86,options.additionalText)
+              text.DrawTextNDC(0.71,0.86,str(options.additionalText))
+              
             text.DrawTextNDC(0.71,0.82,str(cat)+' muInj '+str(mu))
             text.DrawTextNDC(0.71,0.78,'truth '+str(truth))
             leg=r.TLegend(0.12,0.68,0.4,0.88)

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 import os
 import sys
 import fnmatch
@@ -49,10 +48,15 @@ else:
   configDict={}
   for line in f.readlines():
     if line.startswith('#') or line=='' or line =='\n': continue
+    print line
     info = line.strip().split('=')
     if (info[0]=='cat'):
       myOptions={}
-      (cat,mu,muConstr)=info[1].strip('(').strip(')').split(',')
+      unpack = info[1].strip('(').strip(')').split(',')
+      if (len(unpack) == 2):
+          (cat, mu, muConstr) = (unpack[0], unpack[1], 0)
+      else:
+          (cat,mu,muConstr) = (unpack[0], unpack[1], unpack[2])
       configDict[(cat,mu,muConstr)]=myOptions
     else:
       myOptions[info[0]]=info[1]
