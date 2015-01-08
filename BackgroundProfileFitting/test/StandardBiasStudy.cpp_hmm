@@ -195,9 +195,7 @@ int main(int argc, char* argv[]){
     exit(1);
   }
 
-  RooRealVar *mass = (RooRealVar*)bkgWS->var("CMS_hll_mass");
-  //mass->setRange(110, 160);
-  //RooRealVar *mass = new RooRealVar("CMS_hll_mass","CMS_hll_mass",110,160);
+  RooRealVar *mass = (RooRealVar*)bkgWS->var("dimuonMass"); // MATTEO was CMS_hgg_mass
   RooRealVar *mu = new RooRealVar("mu","mu",0.,mu_low,mu_high);
 
   TFile *outFile = new TFile(outFileName.c_str(),"RECREATE");
@@ -242,87 +240,78 @@ int main(int argc, char* argv[]){
   muTree->Branch("iToy", &iToy_, "iToy/i");
   muTree->Branch("fitStatus",&fitStatus_, "fitStatus/I");
 
+  
   //TH1F *muDistFab = new TH1F("muDistFab","muDistFab",int(20*(mu_high-mu_low)),mu_low,mu_high);
   //TH1F *muDistPaul = new TH1F("muDistPaul","muDistPaul",int(20*(mu_high-mu_low)),mu_low,mu_high);
   //TH1F *muDistChi2 = new TH1F("muDistChi2","muDistChi2",int(20*(mu_high-mu_low)),mu_low,mu_high);
   //TH1F *muDistAIC = new TH1F("muDistAIC","muDistAIC",int(20*(mu_high-mu_low)),mu_low,mu_high);
   
-  mass->setBins(100, "mybinning");
-  RooDataSet *data = (RooDataSet*)bkgWS->data(Form("data_mass_cat%d", cat));
-  //RooDataSet *reduced = (RooDataSet*)data->reduce("CMS_hll_mass > 110.5 && CMS_hll_mass < 160.5");
-  //RooDataHist *dataBinned = new RooDataHist(Form("roohist_data_mass_cat%d",cat),Form("roohist_data_mass_cat%d",cat),RooArgSet(*mass),*data);
-  //RooDataHist *dataBinned = new RooDataHist(Form("roohist_data_mass_cat%d",cat),Form("roohist_data_mass_cat%d",cat), RooArgSet(*mass), "mybinning");
-
-  //std::cout << "XX " << mass->GetName() << std::endl;
-  //reduced->Print("V");
-  //
-  //for (int i=0; i<reduced->numEntries(); i++) {
-  //  const RooArgSet* arg = data->get(i);
-  //  // std::cout << "ZZ " << arg->getRealValue(mass->GetName()) << std::endl;
-  //  
-  //  double m = arg->getRealValue(mass->GetName());
-  //  //std::cout << m << std::endl;
-  //  if ( m > 110 &&  m<160)
-  //    dataBinned->add(*arg, data->weight());
-  //}
-  //
-  //for (int i=0; i<dataBinned->numEntries(); i++) {
-  //  const RooArgSet* arg = data->get(i);
-  //  arg->Print("V");
-  //}
-  //
-  //std::cout << "MATTEO" << std::endl;
-  //dataBinned->Print();
-
-  RooDataHist *dataBinned = (RooDataHist*)bkgWS->data(Form("data_mass_cat%d", cat));
-  
-
-  RooDataHist *sigMC = (RooDataHist*)sigWS->data(Form("roohist_sig_ggh_mass_m%d_cat%d",expectSignalMass,cat));
-  RooDataHist *sigMC_vbf = (RooDataHist*)sigWS->data(Form("roohist_sig_vbf_mass_m%d_cat%d",expectSignalMass,cat));
-  //RooDataSet *sigMC_wh = (RooDataSet*)sigWS->data(Form("sig_wh_mass_m%d_cat%d",expectSignalMass,cat));
-  //RooDataSet *sigMC_zh = (RooDataSet*)sigWS->data(Form("sig_zh_mass_m%d_cat%d",expectSignalMass,cat));
-  //RooDataSet *sigMC_tth = (RooDataSet*)sigWS->data(Form("sig_tth_mass_m%d_cat%d",expectSignalMass,cat));
-  std::cout << "Signal Model Building " << std::endl; 
-  sigMC->Print(); sigMC_vbf->Print(); //sigMC_wh->Print();sigMC_zh->Print();//sigMC_tth->Print();
-  sigMC->add(*sigMC_vbf);
-
+  mass->setBins(320);
+  RooDataSet *data = (RooDataSet*)bkgWS->data("data_obs"); // MATTEO was Form(data_mass_cat%d", cat)
+  //RooDataSet *data = (RooDataSet*)bkgWS->data(Form("data_cat%d_7TeV",cat));
+  RooDataHist *dataBinned = new RooDataHist(Form("roohist_data_mass_cat%d",cat),Form("roohist_data_mass_cat%d",cat),RooArgSet(*mass),*data);
+  //RooDataSet *sigMC = (RooDataSet*)sigWS->data("ggH"); // MATTEO was Form("sig_ggh_mass_m%d_cat%d",expectSignalMass,cat
+  //RooDataSet *sigMC_vbf = (RooDataSet*)sigWS->data("qqH");// MATTEO wasForm("sig_vbf_mass_m%d_cat%d",expectSignalMass,cat)
+  //RooDataSet *sigMC_wh = (RooDataSet*)sigWS->data("WH");// MATTEO wasForm("sig_wh_mass_m%d_cat%d",expectSignalMass,cat)
+  //RooDataSet *sigMC_zh = (RooDataSet*)sigWS->data("ZH");// MATTEO wasForm("sig_zh_mass_m%d_cat%d",expectSignalMass,cat)
+  ////RooDataSet *sigMC_tth = (RooDataSet*)sigWS->data(Form("sig_tth_mass_m%d_cat%d",expectSignalMass,cat));
+  //std::cout << "Signal Model Building " << std::endl; 
+  //sigMC->Print(); sigMC_vbf->Print(); sigMC_wh->Print();sigMC_zh->Print();//sigMC_tth->Print();
+  //sigMC->append(*sigMC_vbf);
   //sigMC->append(*sigMC_wh);
   //sigMC->append(*sigMC_zh);
-  //sigMC->append(*sigMC_tth);
-  
-  TH1* sigMC_hist=sigMC->createHistogram(Form("sig_mass_m%d_cat%d",expectSignalMass,cat),*mass,Binning(320));
-  
-  //For range estimation
-  int bin1=sigMC_hist->FindFirstBinAbove(sigMC_hist->GetMaximum()/2.);
-  int bin2=sigMC_hist->FindLastBinAbove(sigMC_hist->GetMaximum()/2.);
-  float fwhm= sigMC_hist->GetBinCenter(bin2)- sigMC_hist->GetBinCenter(bin1);
-  float maxMass=sigMC_hist->GetBinCenter(sigMC_hist->GetMaximumBin());
+  ////sigMC->append(*sigMC_tth);
+  //
+  //TH1* sigMC_hist=sigMC->createHistogram(Form("sig_mass_m%d_cat%d",expectSignalMass,cat),*mass,Binning(320));
+  //
+  ////For range estimation
+  //int bin1=sigMC_hist->FindFirstBinAbove(sigMC_hist->GetMaximum()/2.);
+  //int bin2=sigMC_hist->FindLastBinAbove(sigMC_hist->GetMaximum()/2.);
+  //float fwhm= sigMC_hist->GetBinCenter(bin2)- sigMC_hist->GetBinCenter(bin1);
+  //float maxMass=sigMC_hist->GetBinCenter(sigMC_hist->GetMaximumBin());
   //std::cout << "[INFO]::Signal peak @"<< maxMass << " FWHM/2.35 " << fwhm/2.35 << std::endl;
-  mass->setRange("sigWindow", maxMass-fwhm/2.,maxMass+fwhm/2.);
-  mass->setRange("sigWindow2", maxMass-fwhm,maxMass+fwhm);
+  mass->setRange("sigWindow", expectSignalMass-1., expectSignalMass+1.); //maxMass-fwhm/2.,maxMass+fwhm/2.);
+  mass->setRange("sigWindow2", expectSignalMass-2., expectSignalMass+2.); //maxMass-fwhm,maxMass+fwhm);
   //RooExtendPdf *ggh_pdf = (RooExtendPdf*)sigWS->pdf(Form("sigpdfsmrel_cat%d_7TeV_ggh",cat));
   //RooExtendPdf *vbf_pdf = (RooExtendPdf*)sigWS->pdf(Form("sigpdfsmrel_cat%d_7TeV_vbf",cat));
   //RooExtendPdf *wzh_pdf = (RooExtendPdf*)sigWS->pdf(Form("sigpdfsmrel_cat%d_7TeV_wzh",cat));
   //RooExtendPdf *tth_pdf = (RooExtendPdf*)sigWS->pdf(Form("sigpdfsmrel_cat%d_7TeV_tth",cat));
-  //RooAddPdf *ggh_pdf = (RooAddPdf*)sigWS->pdf("ggH"); //Form("sigpdfsmrel_cat%d_7TeV_ggh",cat));
-  //RooRealVar* norm_ggh = new RooRealVar("norm_ggh", "norm_ggh", 8.1134, 0, 10);
-  //norm_ggh->setConstant(true);
-  //RooExtendPdf* ggh_ext = new RooExtendPdf("ggh_ext", "ggh_ext", *ggh_pdf, *norm_ggh);
-  //RooAddPdf *vbf_pdf = (RooAddPdf*)sigWS->pdf("qqH"); //Form("sigpdfsmrel_cat%d_7TeV_vbf",cat));
-  //RooRealVar* norm_qqh = new RooRealVar("norm_qqh", "norm_qqh", 0.4879, 0, 10);
-  //norm_qqh->setConstant(true);
-  //RooExtendPdf* vbf_ext = new RooExtendPdf("vbf_ext", "vbf_ext", *vbf_pdf, *norm_qqh);
-  //RooAddPdf *wh_pdf = (RooAddPdf*)sigWS->pdf("WH");  //Form("sigpdfsmrel_cat%d_7TeV_wzh",cat));
-  //RooRealVar* norm_wh = new RooRealVar("norm_wh", "norm_wh", 0.2534, 0, 10);
-  //norm_wh->setConstant(true);
-  //RooExtendPdf* wh_ext = new RooExtendPdf("wh_ext", "wh_ext", *wh_pdf, *norm_wh);
-  //RooAddPdf *zh_pdf = (RooAddPdf*)sigWS->pdf("ZH");  //Form("sigpdfsmrel_cat%d_7TeV_tth",cat));
-  //RooRealVar* norm_zh = new RooRealVar("norm_zh", "norm_zh", 0.01451, 0, 10);
-  //norm_zh->setConstant(true);  
-  //RooExtendPdf* zh_ext = new RooExtendPdf("zh_ext", "zh_ext", *zh_pdf, *norm_zh);
-  //
-  //RooAbsPdf *sigPdf = new RooAddPdf(Form("sigpdfsmrel_cat%d_7TeV",cat),Form("sigpdfsmrel_cat%d_7TeV",cat),RooArgList(*ggh_ext,*vbf_ext,*wh_ext,*zh_ext));
-  
+  RooAddPdf *ggh_pdf = (RooAddPdf*)sigWS->pdf("ggH"); //Form("sigpdfsmrel_cat%d_7TeV_ggh",cat));
+  char a[1000];
+  sprintf(a, "%s_ggHmumu125_7TeV_MeanG1", sigWS->GetName()); 
+  sigWS->var(a)->setVal(expectSignalMass);
+  sprintf(a, "%s_ggHmumu125_7TeV_MeanG2", sigWS->GetName()); 
+  sigWS->var(a)->setVal(expectSignalMass);
+  RooRealVar* norm_ggh = new RooRealVar("norm_ggh", "norm_ggh", 8.1134, 0, 100);
+  norm_ggh->setConstant(true);
+  RooExtendPdf* ggh_ext = new RooExtendPdf("ggh_ext", "ggh_ext", *ggh_pdf, *norm_ggh);
+  RooAddPdf *vbf_pdf = (RooAddPdf*)sigWS->pdf("qqH"); //Form("sigpdfsmrel_cat%d_7TeV_vbf",cat));
+  sprintf(a, "%s_vbfHmumu125_7TeV_MeanG1", sigWS->GetName()); 
+  sigWS->var(a)->setVal(expectSignalMass);
+  sprintf(a, "%s_vbfHmumu125_7TeV_MeanG2", sigWS->GetName()); 
+  sigWS->var(a)->setVal(expectSignalMass);
+  RooRealVar* norm_qqh = new RooRealVar("norm_qqh", "norm_qqh", 0.4879, 0, 100);
+  norm_qqh->setConstant(true);
+  RooExtendPdf* vbf_ext = new RooExtendPdf("vbf_ext", "vbf_ext", *vbf_pdf, *norm_qqh);
+  RooAddPdf *wh_pdf = (RooAddPdf*)sigWS->pdf("WH");  //Form("sigpdfsmrel_cat%d_7TeV_wzh",cat));
+  sprintf(a, "%s_whHmumu125_7TeV_MeanG1", sigWS->GetName()); 
+  sigWS->var(a)->setVal(expectSignalMass);
+  sprintf(a, "%s_whHmumu125_7TeV_MeanG2", sigWS->GetName()); 
+  sigWS->var(a)->setVal(expectSignalMass);
+  RooRealVar* norm_wh = new RooRealVar("norm_wh", "norm_wh", 0.2534, 0, 100);
+  norm_wh->setConstant(true);
+  RooExtendPdf* wh_ext = new RooExtendPdf("wh_ext", "wh_ext", *wh_pdf, *norm_wh);
+  RooAddPdf *zh_pdf = (RooAddPdf*)sigWS->pdf("ZH");  //Form("sigpdfsmrel_cat%d_7TeV_tth",cat));
+  sprintf(a, "%s_zhHmumu125_7TeV_MeanG1", sigWS->GetName()); 
+  sigWS->var(a)->setVal(expectSignalMass);
+  sprintf(a, "%s_zhHmumu125_7TeV_MeanG2", sigWS->GetName()); 
+  sigWS->var(a)->setVal(expectSignalMass);
+  RooRealVar* norm_zh = new RooRealVar("norm_zh", "norm_zh", 0.01451, 0, 100);
+  norm_zh->setConstant(true);  
+  RooExtendPdf* zh_ext = new RooExtendPdf("zh_ext", "zh_ext", *zh_pdf, *norm_zh);
+
+  RooAbsPdf *sigPdf = new RooAddPdf(Form("sigpdfsmrel_cat%d_7TeV",cat),Form("sigpdfsmrel_cat%d_7TeV",cat),RooArgList(*ggh_ext,*vbf_ext,*wh_ext,*zh_ext));
+
   //if (!dataBinned || !sigMC){
   //  cerr << "ERROR -- one of data or signal is NULL" << endl;
   //  exit(1);
@@ -347,7 +336,7 @@ int main(int argc, char* argv[]){
     }
     if (it->first==-2) { // this is a keys pdf toy
       double rho = lexical_cast<double>(it->second.first);
-      toysModel.setKeysPdfAttributes(data, rho);
+      toysModel.setKeysPdfAttributes(data,rho);
       toysModel.addBkgPdf("KeysPdf",0,Form("truth_%s_cat%d",it->second.second.c_str(),cat),false);
       continue;
     }
@@ -355,12 +344,11 @@ int main(int argc, char* argv[]){
       toysModel.addBkgPdf(it->second.second,it->first,it->second.first,false);
       continue;
     }
-    //std::cout << "MATTEO: " << it->second.second << " " << it->first << " " << it->second.first.c_str() << std::endl;
     toysModel.addBkgPdf(it->second.second,it->first,Form("truth_%s_cat%d",it->second.first.c_str(),cat),false); 
   }
 
-  toysModel.setSignalPdfFromMC(sigMC);// MATTEO WAS
-  //toysModel.setSignalPdf(sigPdf);// MATTEO WAS NOT
+  //toysModel.setSignalPdfFromMC(sigMC);// MATTEO WAS
+  toysModel.setSignalPdf(sigPdf);// MATTEO WAS NOT
   toysModel.makeSBPdfs(true);
   map<string,RooAbsPdf*> toyBkgPdfs = toysModel.getBkgPdfs();
   map<string,RooAbsPdf*> toySBPdfs = toysModel.getSBPdfs();
@@ -374,8 +362,8 @@ int main(int argc, char* argv[]){
   for (vector<pair<int,pair<string,string> > >::iterator it=testMap.begin(); it!=testMap.end(); it++){
     testModel.addBkgPdf(it->second.second,it->first,Form("test_%s_cat%d",it->second.first.c_str(),cat),false); 
   }
-  testModel.setSignalPdfFromMC(sigMC); // MATTEO WAS
-  //testModel.setSignalPdf(sigPdf);// MATTEO WAS NOT
+  //testModel.setSignalPdfFromMC(sigMC); // MATTEO WAS
+  testModel.setSignalPdf(sigPdf);// MATTEO WAS NOT
   testModel.makeSBPdfs(false);
   map<string,RooAbsPdf*> testBkgPdfs = testModel.getBkgPdfs();
   map<string,RooAbsPdf*> testSBPdfs = testModel.getSBPdfs();
@@ -395,12 +383,12 @@ int main(int argc, char* argv[]){
   // -----
   //  toysModel.setSignalModifierVal(expectSignal);
   //  toysModel.setSignalModifierConstant(true);
-  toysModel.fitToData(dataBinned, false, true, false);
+  toysModel.fitToData(dataBinned,false,true,true);
   //  toysModel.setSignalModifierVal(expectSignal);
   //  toysModel.setSignalModifierConstant(false);
   toysModel.saveWorkspace(outFile);
   if (!skipPlots) 
-      toysModel.plotPdfsToData(dataBinned,50,Form("%s/plots/truthToData/datafit_mu%3.1f",outDir.c_str(),expectSignal),false);
+      toysModel.plotPdfsToData(dataBinned,80,Form("%s/plots/truthToData/datafit_mu%3.1f",outDir.c_str(),expectSignal),false);
 
   iCat_=cat;
 
@@ -432,7 +420,7 @@ int main(int argc, char* argv[]){
     toysModel.throwToy(Form("truth_job%d_toy%d",jobn,toy),dataBinned->sumEntries(),false,binned,poisson,true,true,expectSignal);
     toys = toysModel.getToyData();
     if (!skipPlots) 
-      toysModel.plotToysWithPdfs(Form("%s/plots/toys/job%d_toy%d",outDir.c_str(),jobn,toy),50,false);
+      toysModel.plotToysWithPdfs(Form("%s/plots/toys/job%d_toy%d",outDir.c_str(),jobn,toy),80,false);
     //     }
 
     for (map<string,RooAbsData*>::iterator it=toys.begin(); it!=toys.end(); it++){
@@ -465,7 +453,7 @@ int main(int argc, char* argv[]){
 
       testModel.fitToData(it->second,false,true,!skipPlots,true,runMinos,constraintMu);
       if (!skipPlots)
-	testModel.plotPdfsToData(it->second,50,Form("%s/plots/toys/fit_%s",outDir.c_str(),it->first.c_str()),false,"",true,true);
+	testModel.plotPdfsToData(it->second,80,Form("%s/plots/toys/fit_%s",outDir.c_str(),it->first.c_str()),false,"",true,true);
 
       //      testModel.wsCache->Print("v");
 
@@ -546,11 +534,7 @@ int main(int argc, char* argv[]){
 	split( splitVec_fit, itf->first, boost::is_any_of("_") );
 	sprintf(genName_,"%s",splitVec_gen[2].c_str());	
 	sprintf(fitName_,"%s",splitVec_fit[2].c_str());
-	fitStatus_ = fit->status();
 	muTree->Fill();
-	fit->SetName(Form("%s_fitResult_toy%d_truth%s",itf->first.c_str(),iToy_,genName_));
-	fit->Write();
-
 
 	// Now resetting again after fill...
 	std::pair<string,float> map_pair;

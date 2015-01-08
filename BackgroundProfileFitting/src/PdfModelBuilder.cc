@@ -52,6 +52,8 @@ PdfModelBuilder::PdfModelBuilder():
   recognisedPdfTypes.push_back("Laurent");
   recognisedPdfTypes.push_back("KeysPdf");
   recognisedPdfTypes.push_back("File");
+  recognisedPdfTypes.push_back("HMM");
+  recognisedPdfTypes.push_back("MSSM");
 
   wsCache = new RooWorkspace("PdfModelBuilderCache");
 
@@ -102,48 +104,72 @@ RooAbsPdf* PdfModelBuilder::getChebychev(string prefix, int order){
 
 }
 
+//RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
+//  
+//  RooArgList *coeffList = new RooArgList();
+//  //coeffList->add(RooConst(1.0)); // no need for cnstant in this interface
+//  for (int i=0; i<order; i++){
+//    string name = Form("%s_p%d",prefix.c_str(),i);
+//    //params.insert(pair<string,RooRealVar*>(name, new RooRealVar(name.c_str(),name.c_str(),1.0,0.,5.)));
+//    //RooRealVar *param = new RooRealVar(name.c_str(),name.c_str(),0.01*(i+1), 0.,10.);
+//    RooRealVar *param = new RooRealVar(name.c_str(),name.c_str(),10., 0.,50.);
+//    RooFormulaVar *form = new RooFormulaVar(Form("%s_sq",name.c_str()),Form("%s_sq",name.c_str()),"@0*@0",RooArgList(*param));
+//    params.insert(pair<string,RooRealVar*>(name,param));
+//    prods.insert(pair<string,RooFormulaVar*>(name,form));
+//    coeffList->add(*prods[name]);
+//  }
+//  //RooBernstein *bern = new RooBernstein(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
+//  if (order==1) {
+//	RooBernsteinFast<1> *bern = new RooBernsteinFast<1>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
+//  	return bern;
+//  } else if (order==2) {
+//	RooBernsteinFast<2> *bern = new RooBernsteinFast<2>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
+//  	return bern;
+//  } else if (order==3) {
+//	RooBernsteinFast<3> *bern = new RooBernsteinFast<3>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
+//  	return bern;
+//  } else if (order==4) {
+//	RooBernsteinFast<4> *bern = new RooBernsteinFast<4>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
+//  	return bern;
+//  } else if (order==5) {
+//	RooBernsteinFast<5> *bern = new RooBernsteinFast<5>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
+//  	return bern;
+//  } else if (order==6) {
+//	RooBernsteinFast<6> *bern = new RooBernsteinFast<6>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
+//  	return bern;
+//  } else if (order==7) {
+//	RooBernsteinFast<7> *bern = new RooBernsteinFast<7>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
+//  	return bern;
+//  } else {
+//	return NULL;
+//  }
+//  //return bern;
+//  //bkgPdfs.insert(pair<string,RooAbsPdf*>(bern->GetName(),bern));
+//
+//}
+
 RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
   
   RooArgList *coeffList = new RooArgList();
-  //coeffList->add(RooConst(1.0)); // no need for cnstant in this interface
   for (int i=0; i<order; i++){
     string name = Form("%s_p%d",prefix.c_str(),i);
-    //params.insert(pair<string,RooRealVar*>(name, new RooRealVar(name.c_str(),name.c_str(),1.0,0.,5.)));
-    RooRealVar *param = new RooRealVar(name.c_str(),name.c_str(),0.01*(i+1),-10.,10.);
-    RooFormulaVar *form = new RooFormulaVar(Form("%s_sq",name.c_str()),Form("%s_sq",name.c_str()),"@0*@0",RooArgList(*param));
+    RooRealVar * param = 0;
+    if (i < 3)
+      param = new RooRealVar(name.c_str(),name.c_str(),10., 0.,50.);
+    else
+      param = new RooRealVar(name.c_str(),name.c_str(),1., 0.,10.);
+    //RooFormulaVar *form = new RooFormulaVar(Form("%s_sq",name.c_str()),Form("%s_sq",name.c_str()),"@0*@0",RooArgList(*param));
     params.insert(pair<string,RooRealVar*>(name,param));
-    prods.insert(pair<string,RooFormulaVar*>(name,form));
-    coeffList->add(*prods[name]);
+    //prods.insert(pair<string,RooFormulaVar*>(name,form));
+    coeffList->add(*params[name]);
   }
-  //RooBernstein *bern = new RooBernstein(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
-  if (order==1) {
-	RooBernsteinFast<1> *bern = new RooBernsteinFast<1>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
-  	return bern;
-  } else if (order==2) {
-	RooBernsteinFast<2> *bern = new RooBernsteinFast<2>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
-  	return bern;
-  } else if (order==3) {
-	RooBernsteinFast<3> *bern = new RooBernsteinFast<3>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
-  	return bern;
-  } else if (order==4) {
-	RooBernsteinFast<4> *bern = new RooBernsteinFast<4>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
-  	return bern;
-  } else if (order==5) {
-	RooBernsteinFast<5> *bern = new RooBernsteinFast<5>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
-  	return bern;
-  } else if (order==6) {
-	RooBernsteinFast<6> *bern = new RooBernsteinFast<6>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
-  	return bern;
-  } else if (order==7) {
-	RooBernsteinFast<7> *bern = new RooBernsteinFast<7>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
-  	return bern;
-  } else {
-	return NULL;
-  }
-  //return bern;
+  RooBernstein *bern = new RooBernstein(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
+  
+  return bern;
   //bkgPdfs.insert(pair<string,RooAbsPdf*>(bern->GetName(),bern));
-
 }
+
+
 
 RooAbsPdf* PdfModelBuilder::getPowerLawGeneric(string prefix, int order){
   
@@ -342,6 +368,36 @@ RooAbsPdf* PdfModelBuilder::getPdfFromFile(string &prefix){
   return pdf;
 }
 
+RooAbsPdf* PdfModelBuilder::getHMM(string prefix) {
+
+  RooRealVar* param0 = new RooRealVar("hmm0", "hmm0", 0., -1., 1.);
+  RooRealVar* param1 = new RooRealVar("hmm1", "hmm1", 80.0, 60., 105.);
+  
+  char b[1000];
+  sprintf(b, "exp(%s*%s)/((%s-%s)*(%s-%s))", obs_var->GetName(), param0->GetName(), obs_var->GetName(), param1->GetName(), obs_var->GetName(), param1->GetName());
+  
+  RooGenericPdf* pdf = new RooGenericPdf(prefix.c_str(), prefix.c_str(), b, RooArgSet(*obs_var, *param0, *param1));
+  
+  return pdf;
+}
+
+RooAbsPdf* PdfModelBuilder::getMSSM(string prefix) {
+ 
+  //RooRealVar* param0 = new RooRealVar("hmm0", "hmm0", .0, -1., 1.);
+  //RooRealVar* param1 = new RooRealVar("hmm1", "hmm1", 91.0, 60., 105.);
+  //RooRealVar* param2 = new RooRealVar("hmm2", "hmm2", .0, 0., 1.);
+
+  RooRealVar* param0 = new RooRealVar("hmm0", "hmm0", -.01, -10., 0.);
+  RooRealVar* param1 = new RooRealVar("hmm1", "hmm1", .5, 0., 1.);
+  RooRealVar* param2 = new RooRealVar("hmm2", "hmm2", 1., 0., 100.);
+
+  char b[1000];
+  sprintf(b, "exp(%s*%s)*(((%s*%s)/((91.186-%s)^2 + %s^2/4))+((1-%s)/%s^2))", param0->GetName(), obs_var->GetName(), param1->GetName(), param2->GetName(), obs_var->GetName(), param2->GetName(), param1->GetName(), obs_var->GetName());
+  RooGenericPdf* pdf = new RooGenericPdf(prefix.c_str(), prefix.c_str(), b, RooArgSet(*obs_var, *param0, *param1, *param2));
+  
+  return pdf;
+}
+
 RooAbsPdf* PdfModelBuilder::getExponentialSingle(string prefix, int order){
   
   if (order%2==0){
@@ -400,6 +456,8 @@ void PdfModelBuilder::addBkgPdf(string type, int nParams, string name, bool cach
   if (type=="Laurent") pdf = getLaurentSeries(name,nParams);
   if (type=="KeysPdf") pdf = getKeysPdf(name);
   if (type=="File") pdf = getPdfFromFile(name);
+  if (type=="HMM") pdf = getHMM(name);
+  if (type=="MSSM") pdf = getMSSM(name);
 
   if (cache) {
     wsCache->import(*pdf);
@@ -421,6 +479,13 @@ void PdfModelBuilder::setKeysPdfAttributes(RooDataSet *data, double rho){
 void PdfModelBuilder::setSignalPdf(RooAbsPdf *pdf, RooRealVar *norm){
   sigPdf=pdf;
   sigNorm=norm;
+  signal_set=true;
+}
+
+void PdfModelBuilder::setSignalPdfFromMC(RooDataHist *data){
+  
+  sigPdf = new RooHistPdf(Form("pdf_%s",data->GetName()),Form("pdf_%s",data->GetName()),RooArgSet(*obs_var),*data);
+  sigNorm = new RooConstVar(Form("sig_events_%s",data->GetName()),Form("sig_events_%s",data->GetName()),data->sumEntries());
   signal_set=true;
 }
 
@@ -449,7 +514,7 @@ void PdfModelBuilder::makeSBPdfs(bool cache){
   else {
     sigYield = signalModifier;
   }
-  bkgYield = new RooRealVar("bkg_yield","bkg_yield",1000.,0.,1.e6);
+  bkgYield = new RooRealVar("bkg_yield","bkg_yield",50000., 0.,1.e6);
 
   for (map<string,RooAbsPdf*>::iterator bkg=bkgPdfs.begin(); bkg!=bkgPdfs.end(); bkg++){
     RooAbsPdf *sbMod = new RooAddPdf(Form("sb_%s",bkg->first.c_str()),Form("sb_%s",bkg->first.c_str()),RooArgList(*(bkg->second),*sigPdf),RooArgList(*bkgYield,*sigYield));
@@ -489,6 +554,7 @@ void PdfModelBuilder::plotPdfsToData(RooAbsData *data, int binning, string name,
   
   for (map<string,RooAbsPdf*>::iterator it=pdfSet.begin(); it!=pdfSet.end(); it++){
     if (specPdf && it->first!=specificPdfName && specificPdfName!="NONE") continue;
+    obs_var->Print();
     RooPlot *plot = obs_var->frame();
     data->plotOn(plot,Binning(binning));
 
@@ -564,7 +630,7 @@ void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool
 	fitOptions.Add(h3);
       } 
 
-    fit = (RooFitResult*)it->second->fitTo(*data,fitOptions);
+    fit = (RooFitResult*)it->second->fitTo(*data,fitOptions);//, RooFit::Minimizer("Minuit2"));
 
     if (print){
       cout << "Fit Res Before: " << endl;
@@ -587,6 +653,7 @@ void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool
     if (fit->status()==0 && cache) {
       RooArgSet *fitargs = (RooArgSet*)it->second->getParameters(*obs_var);
       fit->SetName(Form("%s_fitResult",it->first.c_str()));
+      //wsCache->import(*data, RecycleConflictNodes());
       wsCache->import(*fit,Form("%s_fitResult",it->first.c_str()),true);
       wsCache->defineSet(Form("%s_params",it->first.c_str()),*fitargs, kTRUE);
       wsCache->defineSet(Form("%s_observs",it->first.c_str()),*obs_var, kTRUE);

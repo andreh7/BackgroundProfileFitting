@@ -1,0 +1,32 @@
+year=2012
+sigfilename=~sani/public/forAndre/CMS-HElEl_newfunc_interpolated_120_150.root
+bkgfilename=~sani/public/forAndre/CMS-HElEl_newfunc_interpolated_120_150.root
+sigwsname=cms_hgg_workspace
+bkgwsname=cms_hgg_workspace
+datfile=dat/bsConfig_helel.dat
+outerDir=heeBias
+eosPath=/store/caf/user/sani/BiasStudy/
+cat=0 mu=0.0 mlow=-10000000. mhigh=10000000. mass=120
+cat=0 mu=0.0 mlow=-10000000. mhigh=10000000. mass=125
+cat=0 mu=0.0 mlow=-10000000. mhigh=10000000. mass=130
+cat=0 mu=0.0 mlow=-10000000. mhigh=10000000. mass=135
+cat=0 mu=0.0 mlow=-10000000. mhigh=10000000. mass=140
+cat=0 mu=0.0 mlow=-10000000. mhigh=10000000. mass=145
+cat=1 mu=0.0 mlow=-10000000. mhigh=10000000. mass=120
+cat=1 mu=0.0 mlow=-10000000. mhigh=10000000. mass=125
+cat=1 mu=0.0 mlow=-10000000. mhigh=10000000. mass=130
+cat=1 mu=0.0 mlow=-10000000. mhigh=10000000. mass=135
+cat=1 mu=0.0 mlow=-10000000. mhigh=10000000. mass=140
+cat=1 mu=0.0 mlow=-10000000. mhigh=10000000. mass=145
+cat=2 mu=0.0 mlow=-10000000. mhigh=10000000. mass=120
+cat=2 mu=0.0 mlow=-10000000. mhigh=10000000. mass=125
+cat=2 mu=0.0 mlow=-10000000. mhigh=10000000. mass=130
+cat=2 mu=0.0 mlow=-10000000. mhigh=10000000. mass=135
+cat=2 mu=0.0 mlow=-10000000. mhigh=10000000. mass=140
+cat=2 mu=0.0 mlow=-10000000. mhigh=10000000. mass=145
+cat=3 mu=0.0 mlow=-10000000. mhigh=10000000. mass=120
+cat=3 mu=0.0 mlow=-10000000. mhigh=10000000. mass=125
+cat=3 mu=0.0 mlow=-10000000. mhigh=10000000. mass=130
+cat=3 mu=0.0 mlow=-10000000. mhigh=10000000. mass=135
+cat=3 mu=0.0 mlow=-10000000. mhigh=10000000. mass=140
+cat=3 mu=0.0 mlow=-10000000. mhigh=10000000. mass=145

@@ -49,6 +49,7 @@ colorMap['pol4']=r.kOrange
 colorMap['pol5']=r.kMagenta-10
 colorMap['pol6']=r.kRed-9
 colorMap['pol7']=r.kGreen-7
+colorMap['hmm']=r.kBlue-7
 
 labelMap={}
 labelMap['pull']='#mu pull'
@@ -63,7 +64,7 @@ def getMaximumBias(graph):
     x=r.Double(0)
     y=r.Double(0)
     graph.GetPoint(i,x,y)
-    if (x>=115 and x<=135):
+    if (x>=115 and x<=150):
       if (abs(y)>maxBias):
         maxBias=abs(y)
   return maxBias

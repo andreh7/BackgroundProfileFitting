@@ -1,0 +1,20 @@
+cat=(0,0.0)
+plot=mu(1000:-10000:-10000),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=heeBias/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/heeBias/biasStudy_heeBias_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(1,0.0)
+plot=mu(1000:-10000:-10000),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=heeBias/cat1_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/heeBias/biasStudy_heeBias_cat1_mu0.0_list.root
+#######  cat 1 with muInj 0.0 ######
+cat=(2,0.0)
+plot=mu(1000:-10000:-10000),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=heeBias/cat2_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/heeBias/biasStudy_heeBias_cat2_mu0.0_list.root
+#######  cat 2 with muInj 0.0 ######
+cat=(3,0.0)
+plot=mu(1000:-10000:-10000),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=heeBias/cat3_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/heeBias/biasStudy_heeBias_cat3_mu0.0_list.root
+#######  cat 3 with muInj 0.0 ######

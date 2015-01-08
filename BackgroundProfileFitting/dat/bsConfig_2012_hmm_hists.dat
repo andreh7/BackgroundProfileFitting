@@ -1,0 +1,150 @@
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=vbfloose7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/vbfloose7/biasStudy_vbfloose7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=2GF7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/2GF7/biasStudy_2GF7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=vbftight7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/vbftight7/biasStudy_vbftight7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=failBB7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/failBB7/biasStudy_failBB7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=failBE7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/failBE7/biasStudy_failBE7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=failBO7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/failBO7/biasStudy_failBO7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=failEE7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/failEE7/biasStudy_failEE7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=failOE7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/failOE7/biasStudy_failOE7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=failOO7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/failOO7/biasStudy_failOO7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=passBB7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/passBB7/biasStudy_passBB7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=passBE7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/passBE7/biasStudy_passBE7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=passBO7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/passBO7/biasStudy_passBO7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=passEE7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/passEE7/biasStudy_passEE7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=passOE7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/passOE7/biasStudy_passOE7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=passOO7/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/passOO7/biasStudy_passOO7_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=vbfloose/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/vbfloose/biasStudy_vbfloose_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=2GF/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/2GF/biasStudy_2GF_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=vbftight/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/vbftight/biasStudy_vbftight_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=failBB/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/failBB/biasStudy_failBB_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=failBE/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/failBE/biasStudy_failBE_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=failBO/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/failBO/biasStudy_failBO_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=failEE/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/failEE/biasStudy_failEE_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=failOE/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/failOE/biasStudy_failOE_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=failOO/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/failOO/biasStudy_failOO_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=passBB/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/passBB/biasStudy_passBB_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=passBE/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/passBE/biasStudy_passBE_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=passBO/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/passBO/biasStudy_passBO_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=passEE/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/passEE/biasStudy_passEE_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=passOE/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/passOE/biasStudy_passOE_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######
+cat=(0,0.0)
+plot=mu(1000:-500:500),err_mu(250:0:250),pull_mu(400:-5.0:5.0)
+input=passOO/cat0_mu0.0_list.txt
+outfile=root://eoscms//eos/cms/store/caf/user/sani/BiasStudy/passOO/biasStudy_passOO_cat0_mu0.0_list.root
+#######  cat 0 with muInj 0.0 ######

@@ -41,8 +41,10 @@ def writeSubScript(cat,mlow,mhigh,outdir,muInject,massInject,constraintMu=0,cons
   massInject=float(massInject)
   constrainMu=int(constraintMu)
   constrainMuWidth=float(constraintMuWidth)
-
+  
   subline = './StandardBiasStudy -s %s -b %s --sigwsname %s --bkgwsname %s -d %s -c %d -L %3.1f -H %3.1f -t %d -D %s --expectSignal=%3.1f --expectSignalMass=%3d'%(os.path.basename(options.sigfilename) if options.copyWorkspace else options.sigfilename,os.path.basename(options.bkgfilename) if options.copyWorkspace else options.bkgfilename,options.sigwsname,options.bkgwsname,os.path.basename(options.datfile),cat,mlow,mhigh,options.toysperjob,os.path.abspath(outdir),muInject,massInject)
+
+  
 
   if options.skipPlots: subline += ' --skipPlots'
   if options.bkgOnly: subline += ' --bkgOnly'

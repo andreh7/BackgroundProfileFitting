@@ -196,8 +196,6 @@ int main(int argc, char* argv[]){
   }
 
   RooRealVar *mass = (RooRealVar*)bkgWS->var("CMS_hll_mass");
-  //mass->setRange(110, 160);
-  //RooRealVar *mass = new RooRealVar("CMS_hll_mass","CMS_hll_mass",110,160);
   RooRealVar *mu = new RooRealVar("mu","mu",0.,mu_low,mu_high);
 
   TFile *outFile = new TFile(outFileName.c_str(),"RECREATE");
@@ -242,41 +240,16 @@ int main(int argc, char* argv[]){
   muTree->Branch("iToy", &iToy_, "iToy/i");
   muTree->Branch("fitStatus",&fitStatus_, "fitStatus/I");
 
+  
   //TH1F *muDistFab = new TH1F("muDistFab","muDistFab",int(20*(mu_high-mu_low)),mu_low,mu_high);
   //TH1F *muDistPaul = new TH1F("muDistPaul","muDistPaul",int(20*(mu_high-mu_low)),mu_low,mu_high);
   //TH1F *muDistChi2 = new TH1F("muDistChi2","muDistChi2",int(20*(mu_high-mu_low)),mu_low,mu_high);
   //TH1F *muDistAIC = new TH1F("muDistAIC","muDistAIC",int(20*(mu_high-mu_low)),mu_low,mu_high);
   
-  mass->setBins(100, "mybinning");
+  mass->setBins(100);
   RooDataSet *data = (RooDataSet*)bkgWS->data(Form("data_mass_cat%d", cat));
-  //RooDataSet *reduced = (RooDataSet*)data->reduce("CMS_hll_mass > 110.5 && CMS_hll_mass < 160.5");
-  //RooDataHist *dataBinned = new RooDataHist(Form("roohist_data_mass_cat%d",cat),Form("roohist_data_mass_cat%d",cat),RooArgSet(*mass),*data);
-  //RooDataHist *dataBinned = new RooDataHist(Form("roohist_data_mass_cat%d",cat),Form("roohist_data_mass_cat%d",cat), RooArgSet(*mass), "mybinning");
-
-  //std::cout << "XX " << mass->GetName() << std::endl;
-  //reduced->Print("V");
-  //
-  //for (int i=0; i<reduced->numEntries(); i++) {
-  //  const RooArgSet* arg = data->get(i);
-  //  // std::cout << "ZZ " << arg->getRealValue(mass->GetName()) << std::endl;
-  //  
-  //  double m = arg->getRealValue(mass->GetName());
-  //  //std::cout << m << std::endl;
-  //  if ( m > 110 &&  m<160)
-  //    dataBinned->add(*arg, data->weight());
-  //}
-  //
-  //for (int i=0; i<dataBinned->numEntries(); i++) {
-  //  const RooArgSet* arg = data->get(i);
-  //  arg->Print("V");
-  //}
-  //
-  //std::cout << "MATTEO" << std::endl;
-  //dataBinned->Print();
-
-  RooDataHist *dataBinned = (RooDataHist*)bkgWS->data(Form("data_mass_cat%d", cat));
-  
-
+  //RooDataSet *data = (RooDataSet*)bkgWS->data(Form("data_cat%d_7TeV",cat));
+  RooDataHist *dataBinned = (RooDataHist*)bkgWS->data(Form("roohist_data_mass_cat%d",cat)); //new RooDataHist(Form("roohist_data_mass_cat%d",cat),Form("roohist_data_mass_cat%d",cat),RooArgSet(*mass),*data);
   RooDataHist *sigMC = (RooDataHist*)sigWS->data(Form("roohist_sig_ggh_mass_m%d_cat%d",expectSignalMass,cat));
   RooDataHist *sigMC_vbf = (RooDataHist*)sigWS->data(Form("roohist_sig_vbf_mass_m%d_cat%d",expectSignalMass,cat));
   //RooDataSet *sigMC_wh = (RooDataSet*)sigWS->data(Form("sig_wh_mass_m%d_cat%d",expectSignalMass,cat));
@@ -347,7 +320,7 @@ int main(int argc, char* argv[]){
     }
     if (it->first==-2) { // this is a keys pdf toy
       double rho = lexical_cast<double>(it->second.first);
-      toysModel.setKeysPdfAttributes(data, rho);
+      toysModel.setKeysPdfAttributes(data,rho);
       toysModel.addBkgPdf("KeysPdf",0,Form("truth_%s_cat%d",it->second.second.c_str(),cat),false);
       continue;
     }
@@ -355,7 +328,6 @@ int main(int argc, char* argv[]){
       toysModel.addBkgPdf(it->second.second,it->first,it->second.first,false);
       continue;
     }
-    //std::cout << "MATTEO: " << it->second.second << " " << it->first << " " << it->second.first.c_str() << std::endl;
     toysModel.addBkgPdf(it->second.second,it->first,Form("truth_%s_cat%d",it->second.first.c_str(),cat),false); 
   }
 
@@ -395,12 +367,12 @@ int main(int argc, char* argv[]){
   // -----
   //  toysModel.setSignalModifierVal(expectSignal);
   //  toysModel.setSignalModifierConstant(true);
-  toysModel.fitToData(dataBinned, false, true, false);
+  toysModel.fitToData(dataBinned,false,true,true);
   //  toysModel.setSignalModifierVal(expectSignal);
   //  toysModel.setSignalModifierConstant(false);
   toysModel.saveWorkspace(outFile);
   if (!skipPlots) 
-      toysModel.plotPdfsToData(dataBinned,50,Form("%s/plots/truthToData/datafit_mu%3.1f",outDir.c_str(),expectSignal),false);
+      toysModel.plotPdfsToData(dataBinned,100,Form("%s/plots/truthToData/datafit_mu%3.1f",outDir.c_str(),expectSignal),false);
 
   iCat_=cat;
 
@@ -432,7 +404,7 @@ int main(int argc, char* argv[]){
     toysModel.throwToy(Form("truth_job%d_toy%d",jobn,toy),dataBinned->sumEntries(),false,binned,poisson,true,true,expectSignal);
     toys = toysModel.getToyData();
     if (!skipPlots) 
-      toysModel.plotToysWithPdfs(Form("%s/plots/toys/job%d_toy%d",outDir.c_str(),jobn,toy),50,false);
+      toysModel.plotToysWithPdfs(Form("%s/plots/toys/job%d_toy%d",outDir.c_str(),jobn,toy),80,false);
     //     }
 
     for (map<string,RooAbsData*>::iterator it=toys.begin(); it!=toys.end(); it++){
@@ -465,7 +437,7 @@ int main(int argc, char* argv[]){
 
       testModel.fitToData(it->second,false,true,!skipPlots,true,runMinos,constraintMu);
       if (!skipPlots)
-	testModel.plotPdfsToData(it->second,50,Form("%s/plots/toys/fit_%s",outDir.c_str(),it->first.c_str()),false,"",true,true);
+	testModel.plotPdfsToData(it->second,80,Form("%s/plots/toys/fit_%s",outDir.c_str(),it->first.c_str()),false,"",true,true);
 
       //      testModel.wsCache->Print("v");
 
@@ -546,11 +518,7 @@ int main(int argc, char* argv[]){
 	split( splitVec_fit, itf->first, boost::is_any_of("_") );
 	sprintf(genName_,"%s",splitVec_gen[2].c_str());	
 	sprintf(fitName_,"%s",splitVec_fit[2].c_str());
-	fitStatus_ = fit->status();
 	muTree->Fill();
-	fit->SetName(Form("%s_fitResult_toy%d_truth%s",itf->first.c_str(),iToy_,genName_));
-	fit->Write();
-
 
 	// Now resetting again after fill...
 	std::pair<string,float> map_pair;

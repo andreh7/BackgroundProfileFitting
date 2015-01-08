@@ -36,6 +36,7 @@ class PdfModelBuilder {
 
     void setSignalPdf(RooAbsPdf *pdf, RooRealVar *norm=NULL);
     void setSignalPdfFromMC(RooDataSet *data);
+    void setSignalPdfFromMC(RooDataHist *data);
     void makeSBPdfs(bool cache=true);
 
 
@@ -67,6 +68,8 @@ class PdfModelBuilder {
     RooAbsPdf* getExponential(string prefix, int order);
     RooAbsPdf* getExponentialSingle(string prefix, int order);
     RooAbsPdf* getLaurentSeries(string prefix, int order);
+    RooAbsPdf* getHMM(string prefix);
+    RooAbsPdf* getMSSM(string prefix);
     RooAbsPdf* getKeysPdf(string prefix);
     RooAbsPdf* getPdfFromFile(string &prefix);
 
