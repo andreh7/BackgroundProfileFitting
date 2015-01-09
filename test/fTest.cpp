@@ -51,6 +51,24 @@ int nBinsForMass = 50;
 
 TRandom3 *RandomGen = new TRandom3();
 
+//----------------------------------------------------------------------
+/** @return a given object from the RooWorkspace or print an error
+    message (and exit the program) with the name of the object
+    which could not be found. */
+TObject *
+getObj(RooWorkspace *ws, const std::string &objName)
+{
+  TObject *retval = ws->obj(objName.c_str());
+  if (retval == NULL)
+  {
+    cerr << "could not find object '" << objName << "' in workspace " << ws->GetName() << ", exiting" << endl;
+    exit(1);
+  }
+
+  return retval;
+}
+//----------------------------------------------------------------------
+
 RooAbsPdf* getPdf(PdfModelBuilder &pdfsModel, string type, int order, const char* ext=""){
   
   if (type=="Bernstein") return pdfsModel.getBernstein(Form("%s_bern%d",ext,order),order); 
