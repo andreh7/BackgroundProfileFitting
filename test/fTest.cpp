@@ -532,13 +532,17 @@ int main(int argc, char* argv[]){
   bool saveMultiPdf=false;
   
   // name of input workspace
-  std::string inputWsName = "cms_hgg_workspace";
+  string inputWsName = "cms_hgg_workspace";
+
+  // name of reconstructed mass variable
+  string recoMassVarName = "CMS_hgg_mass";
 
   po::options_description desc("Allowed options");
   desc.add_options()
     ("help,h",                                                                                  "Show help")
     ("infilename,i", po::value<string>(&fileName),                                              "In file name")
     ("inwsname", po::value<string>(&inputWsName),                                               "name of input workspace")
+    ("massvar", po::value<string>(&recoMassVarName),                                            "name of reconstructed mass variable")
     ("ncats,c", po::value<int>(&ncats)->default_value(5),                                       "Number of categories")
     ("singleCat", po::value<int>(&singleCategory)->default_value(-1),                           "Run A single Category")
     ("datfile,d", po::value<string>(&datfile)->default_value("dat/fTest.dat"),                  "Right results to datfile for BiasStudy")
@@ -677,7 +681,7 @@ int main(int argc, char* argv[]){
   vector<map<string,RooAbsPdf*> > pdfs_vec;
 
   PdfModelBuilder pdfsModel;
-  RooRealVar *mass = (RooRealVar*)inWS->var("CMS_hll_mass");//"dimuonMass"); //CMS_hgg_mass");
+  RooRealVar *mass = (RooRealVar*)getObj(inWS,recoMassVarName);
   pdfsModel.setObsVar(mass);
   double upperEnvThreshold = 0.1; // upper threshold on delta(chi2) to include function in envelope (looser than truth function)
   
