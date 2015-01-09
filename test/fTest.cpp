@@ -578,7 +578,14 @@ int main(int argc, char* argv[]){
 
   system(Form("mkdir -p %s",outDir.c_str()));
   TFile *inFile = TFile::Open(fileName.c_str());
-  RooWorkspace *inWS = (RooWorkspace*)inFile->Get("cms_hgg_workspace");
+
+  const std::string inputWsName = "cms_hgg_workspace";
+  RooWorkspace *inWS = (RooWorkspace*)inFile->Get(inputWsName.c_str());
+  if (inWS == NULL)
+  {
+    cerr << "could not find a workspace named '" << inputWsName << "' in file " << fileName << ", exiting" << endl;
+    exit(1);
+  }
 
   if (saveMultiPdf){
 	transferMacros(inFile,outputfile);
