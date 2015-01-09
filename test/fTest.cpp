@@ -69,6 +69,52 @@ getObj(RooWorkspace *ws, const std::string &objName)
 }
 //----------------------------------------------------------------------
 
+/** replaces sequences of the form  {varname} by the corresponding value
+    given in the map (or leaves them if there is no value given for the corresponding key) */
+string 
+applyStringTemplate(const std::string &tmpl, const std::map<std::string, std::string> &arguments)
+{
+  string retval;
+
+  string::size_type pos, prevpos = 0;
+  for (;;)
+  {
+    pos = tmpl.find('{', prevpos);
+
+    if (pos == string::npos)
+    {
+      // copy the remainder
+      return retval + tmpl.substr(prevpos);
+    }
+
+    // copy already things before the { to the return value
+    retval += tmpl.substr(prevpos, pos - prevpos);
+
+    // find the end of the end of the variable
+    string::size_type endpos = tmpl.find('}', pos + 1);
+
+    if (endpos == string::npos)
+      // variable was not 'closed', add the remainder of the string
+      return retval + tmpl.substr(pos);
+
+    // the name of the variable is in pos+1 .. endpos - 1
+    string varname = tmpl.substr(pos+1, (endpos - 1) - (pos + 1) + 1);
+    
+    map<std::string, std::string>::const_iterator it = arguments.find(varname);
+    if (it == arguments.end())
+      // variable not found, just copy the string {varname} to the return value
+      retval += tmpl.substr(pos, endpos - pos + 1);
+    else
+      // variable exists, copy the variable's content instead
+      retval += it->second;
+
+    // prepare next iteration
+    prevpos = endpos + 1;
+  }
+}
+
+//----------------------------------------------------------------------
+
 RooAbsPdf* getPdf(PdfModelBuilder &pdfsModel, string type, int order, const char* ext=""){
   
   if (type=="Bernstein") return pdfsModel.getBernstein(Form("%s_bern%d",ext,order),order); 
