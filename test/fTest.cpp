@@ -735,6 +735,12 @@ int main(int argc, char* argv[]){
   system(Form("mkdir -p %s",outDir.c_str()));
   TFile *inFile = TFile::Open(fileName.c_str());
 
+  if (!inFile->IsOpen())
+  {    
+    cerr << "could not open input file '" << fileName << "', exiting" << endl;
+    exit(1);
+  }
+
   RooWorkspace *inWS = (RooWorkspace*)inFile->Get(inputWsName.c_str());
   if (inWS == NULL)
   {
