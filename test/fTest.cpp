@@ -601,6 +601,9 @@ int main(int argc, char* argv[]){
   // name of reconstructed mass variable
   string recoMassVarName = "CMS_hgg_mass";
 
+  // template for observed data object names
+  string obsNameTemplate = "data_mass_cat{cat}";
+
   po::options_description desc("Allowed options");
   desc.add_options()
     ("help,h",                                                                                  "Show help")
@@ -615,6 +618,7 @@ int main(int argc, char* argv[]){
     ("runFtestCheckWithToys", 									"When running the F-test, use toys to calculate pvals (and make plots) ")
     ("is2011",                                                                                  "Run 2011 config")
     ("unblind",  									        "Dont blind plots")
+    ("obsname", po::value<string>(&obsNameTemplate),                                            "name template for observed data objects in workspace")
     ("verbose,v",                                                                               "Run with more output")
   ;
   po::variables_map vm;
@@ -752,14 +756,18 @@ int main(int argc, char* argv[]){
   fprintf(resFile,"Truth Model & d.o.f & $\\Delta NLL_{N+1}$ & $p(\\chi^{2}>\\chi^{2}_{(N\\rightarrow N+1)})$ \\\\\n");
   fprintf(resFile,"\\hline\n");
 
+  map<string, string> stringTemplateArgs;
+
   std::string ext = is2011 ? "7TeV" : "8TeV";
   for (int cat=startingCategory; cat<ncats; cat++){
-    
+
+    stringTemplateArgs["cat"] = Form("%d", cat);
+
     map<string,int> choices;
     map<string,std::vector<int> > choices_envelope;
     map<string,RooAbsPdf*> pdfs;
     map<string,RooAbsPdf*> allPdfs;
-    RooDataSet *dataFull = (RooDataSet*)inWS->data(Form("data_mass_cat%d",cat));
+    RooDataSet *dataFull = (RooDataSet*) getObj(inWS,applyStringTemplate(obsNameTemplate, stringTemplateArgs));
 
     ////mass->setBins(50, "mybinning");
     mass->setRange("myrange", 110, 160);
@@ -767,7 +775,7 @@ int main(int argc, char* argv[]){
     //RooDataSet *data = (RooDataSet*)inWS->data(Form("data_mass_cat%d", cat));
     //RooDataHist *dataBinned = new RooDataHist(Form("roohist_data_mass_cat%d",cat),Form("roohist_data_mass_cat%d",cat),RooArgSet(*mass),*data);                  
     ////RooDataHist *dataBinned = new RooDataHist(Form("roohist_data_mass_cat%d",cat),Form("roohist_data_mass_cat%d",cat), RooArgSet(*mass), "mybinning");
-    RooDataHist *data = (RooDataHist*)inWS->data(Form("data_mass_cat%d", cat));
+    RooDataHist *data = (RooDataHist*) getObj(inWS,applyStringTemplate(obsNameTemplate, stringTemplateArgs));
     
     
     //RooDataHist thisdataBinned(Form("roohist_data_mass_cat%d",cat),"data",*mass,*dataFull);
