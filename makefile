@@ -21,7 +21,7 @@ USERLIBS += -L$(BOOST_PATH)/libs/ -lboost_regex -lboost_program_options
 endif
 ifeq ($(UNAME),Linux)
 $(info Found OS Linux - using linux build)
-BOOST_PATH=$(shell scram tool info boost | awk -F= '/BOOST_BASE/ {  print $$2  }')
+BOOST_PATH=$(shell cd $(CMSSW_BASE) && scram tool info boost | awk -F= '/BOOST_BASE/ {  print $$2  }')
 USERINCLUDES += -I$(BOOST_PATH)/include/
 USERINCLUDES += -I $(CMSSW_BASE)/src/ -I $(CMSSW_RELEASE_BASE)/src/
 USERLIBS += -L$(BOOST_PATH)/lib/ -lboost_regex -lboost_program_options 
