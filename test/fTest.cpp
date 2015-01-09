@@ -530,11 +530,15 @@ int main(int argc, char* argv[]){
   bool is2011=false;
   bool verbose=false;
   bool saveMultiPdf=false;
+  
+  // name of input workspace
+  std::string inputWsName = "cms_hgg_workspace";
 
   po::options_description desc("Allowed options");
   desc.add_options()
     ("help,h",                                                                                  "Show help")
     ("infilename,i", po::value<string>(&fileName),                                              "In file name")
+    ("inwsname", po::value<string>(&inputWsName),                                               "name of input workspace")
     ("ncats,c", po::value<int>(&ncats)->default_value(5),                                       "Number of categories")
     ("singleCat", po::value<int>(&singleCategory)->default_value(-1),                           "Run A single Category")
     ("datfile,d", po::value<string>(&datfile)->default_value("dat/fTest.dat"),                  "Right results to datfile for BiasStudy")
@@ -579,7 +583,6 @@ int main(int argc, char* argv[]){
   system(Form("mkdir -p %s",outDir.c_str()));
   TFile *inFile = TFile::Open(fileName.c_str());
 
-  const std::string inputWsName = "cms_hgg_workspace";
   RooWorkspace *inWS = (RooWorkspace*)inFile->Get(inputWsName.c_str());
   if (inWS == NULL)
   {
