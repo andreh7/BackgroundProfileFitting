@@ -855,19 +855,10 @@ int main(int argc, char* argv[]){
     map<string,RooAbsPdf*> allPdfs;
     RooDataSet *dataFull = (RooDataSet*) getObj(inWS,applyStringTemplate(obsNameTemplate, stringTemplateArgs));
 
-    ////mass->setBins(50, "mybinning");
     mass->setRange("myrange", 110, 160);
     mass->setBins(nBinsForMass);
-    //RooDataSet *data = (RooDataSet*)inWS->data(Form("data_mass_cat%d", cat));
-    //RooDataHist *dataBinned = new RooDataHist(Form("roohist_data_mass_cat%d",cat),Form("roohist_data_mass_cat%d",cat),RooArgSet(*mass),*data);                  
-    ////RooDataHist *dataBinned = new RooDataHist(Form("roohist_data_mass_cat%d",cat),Form("roohist_data_mass_cat%d",cat), RooArgSet(*mass), "mybinning");
-    RooDataHist *data = (RooDataHist*) getObj(inWS,applyStringTemplate(obsNameTemplate, stringTemplateArgs));
+    RooAbsData *data = (RooAbsData*) getObj(inWS,applyStringTemplate(obsNameTemplate, stringTemplateArgs));
     
-    
-    //RooDataHist thisdataBinned(Form("roohist_data_mass_cat%d",cat),"data",*mass,*dataFull);
-    //RooDataSet *data = (RooDataSet*)&thisdataBinned;
-    ////RooDataSet *data = (RooDataSet*)dataFull;
-
     RooArgList storedPdfs("store");
 
     fprintf(resFile,"\\multicolumn{4}{|c|}{\\textbf{Category %d}} \\\\\n",cat);
