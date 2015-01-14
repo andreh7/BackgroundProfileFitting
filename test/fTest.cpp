@@ -131,8 +131,7 @@ RooAbsPdf* getPdf(PdfModelBuilder &pdfsModel, string type, int order, const char
   }
 }
 
-//void runFit(RooAbsPdf *pdf, RooDataSet *data, double *NLL, int *stat_t, int MaxTries){
-
+//----------------------------------------------------------------------
 void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxTries, const RooCmdArg& fitRange /* = RooCmdArg::none() */ ){
 
   int ntries=0;
@@ -161,7 +160,6 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
 
 //----------------------------------------------------------------------
 
-//double getProbabilityFtest(double chi2, int ndof,RooAbsPdf *pdfNull, RooAbsPdf *pdfTest, RooRealVar *mass, RooDataSet *data, std::string name){
 double getProbabilityFtest(double chi2, int ndof,RooAbsPdf *pdfNull, RooAbsPdf *pdfTest, RooRealVar *mass, RooAbsData *data, std::string name,
                            const RooCmdArg& fitRange
                            ){
@@ -315,7 +313,7 @@ double getProbabilityFtest(double chi2, int ndof,RooAbsPdf *pdfNull, RooAbsPdf *
 
 }
 
-//double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooDataSet *data, std::string name){
+//----------------------------------------------------------------------
 double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooAbsData *data, std::string name, const RooCmdArg& fitRange){
 
   double prob;
@@ -402,7 +400,7 @@ double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooAbsData *data, std
 
 }
 
-//void plot(RooRealVar *mass, RooAbsPdf *pdf, RooDataSet *data, string name, int status, double *prob){
+//----------------------------------------------------------------------
 void plot(RooRealVar *mass, RooAbsPdf *pdf, RooAbsData *data, string name, int status, double *prob, const RooCmdArg& fitRange){
   
   // Chi2 taken from full range fit
@@ -441,7 +439,9 @@ void plot(RooRealVar *mass, RooAbsPdf *pdf, RooAbsData *data, string name, int s
   delete canv;
   delete lat;
 }
-//void plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, RooDataSet *data, string name, int cat, int bestFitPdf=-1){
+
+//----------------------------------------------------------------------
+
 void plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, RooAbsData *data, const RooCmdArg& fitRange, string name, int cat, int bestFitPdf=-1){
   
   int color[7] = {kBlue,kRed,kMagenta,kGreen+1,kOrange+7,kAzure+10,kBlack};
@@ -489,7 +489,8 @@ void plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, RooAbsData
   delete canv;
 }
 
-//void plot(RooRealVar *mass, map<string,RooAbsPdf*> pdfs, RooDataSet *data, string name, int cat, int bestFitPdf=-1){
+//----------------------------------------------------------------------
+
 void plot(RooRealVar *mass, map<string,RooAbsPdf*> pdfs, RooAbsData *data, string name, int cat, int bestFitPdf=-1){
   
   int color[7] = {kBlue,kRed,kMagenta,kGreen+1,kOrange+7,kAzure+10,kBlack};
@@ -532,6 +533,8 @@ void plot(RooRealVar *mass, map<string,RooAbsPdf*> pdfs, RooAbsData *data, strin
   delete canv;
 }
 
+//----------------------------------------------------------------------
+
 void transferMacros(TFile *inFile, TFile *outFile){
   
   TIter next(inFile->GetListOfKeys());
@@ -545,7 +548,9 @@ void transferMacros(TFile *inFile, TFile *outFile){
     }
   }
 }
-//int getBestFitFunction(RooMultiPdf *bkg, RooDataSet *data, RooCategory *cat, bool silent=false){
+
+//----------------------------------------------------------------------
+
 int getBestFitFunction(RooMultiPdf *bkg, RooAbsData *data, RooCategory *cat, const RooCmdArg &fitRange, bool silent=false){
 
 
@@ -623,6 +628,8 @@ int getBestFitFunction(RooMultiPdf *bkg, RooAbsData *data, RooCategory *cat, con
 	}
 	return best_index;
 }
+
+//----------------------------------------------------------------------
 
 int main(int argc, char* argv[]){
  
