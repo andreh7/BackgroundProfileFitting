@@ -2,3 +2,5 @@
 *.o
 bin/
 plots/
+RootDict.cxx
+RootDict.h
