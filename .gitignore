@@ -1,6 +1,7 @@
 *~
 *.o
 bin/
+lib/
 plots/
 RootDict.cxx
 RootDict.h
