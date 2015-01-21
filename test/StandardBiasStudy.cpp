@@ -125,6 +125,7 @@ int main(int argc, char* argv[]){
   bool throwHybridToys=false;
   vector<float> switchMass;
   vector<string> switchFunc;
+  string recoMassName;
 
   TRandom3* generator=new TRandom3(0);
 
@@ -135,6 +136,7 @@ int main(int argc, char* argv[]){
     ("bkgfilename,b", po::value<string>(&bkgFileName),                                          "Background file name")
     ("sigwsname", po::value<string>(&sigWSName)->default_value("cms_hgg_workspace"),            "Signal workspace name")
     ("bkgwsname", po::value<string>(&bkgWSName)->default_value("cms_hgg_workspace"),            "Background workspace name")
+    ("massvar",   po::value<string>(&recoMassName)->default_value("CMS_hll_mass"),              "reconstructed mass variable name")
     ("outfilename,o", po::value<string>(&outFileName)->default_value("BiasStudyOut.root"),      "Output file name")
     ("datfile,d", po::value<string>(&datFileName)->default_value("config.dat"),                 "Name of datfile containing pdf info")
     ("outDir,D", po::value<string>(&outDir)->default_value("./"),                               "Name of out directory for plots")
@@ -196,7 +198,6 @@ int main(int argc, char* argv[]){
     exit(1);
   }
 
-  RooRealVar *mass = (RooRealVar*)bkgWS->var("CMS_hll_mass");
   if (sigWS == NULL)
   {
     cerr << "ERROR - signal workspace " << sigWSName << " not found in file " << bkgFileName.c_str() << endl;
@@ -204,6 +205,7 @@ int main(int argc, char* argv[]){
   }
 
 
+  RooRealVar *mass = (RooRealVar*)getObj(bkgWS,recoMassName);
   //mass->setRange(110, 160);
   //RooRealVar *mass = new RooRealVar("CMS_hll_mass","CMS_hll_mass",110,160);
   RooRealVar *mu = new RooRealVar("mu","mu",0.,mu_low,mu_high);
