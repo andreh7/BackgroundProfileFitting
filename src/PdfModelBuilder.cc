@@ -25,6 +25,7 @@
 #include "boost/foreach.hpp"
 
 #include "../interface/PdfModelBuilder.h"
+#include "../interface/utils.h"
 
 #include "HiggsAnalysis/CombinedLimit/interface/HGGRooPdfs.h"
 #include "HiggsAnalysis/CombinedLimit/interface/RooBernsteinFast.h"
@@ -461,7 +462,7 @@ void PdfModelBuilder::addBkgPdf(string type, int nParams, string name, bool cach
 
   if (cache) {
     wsCache->import(*pdf);
-    RooAbsPdf *cachePdf = wsCache->pdf(pdf->GetName());
+    RooAbsPdf *cachePdf = (RooAbsPdf*) getObj(wsCache,pdf->GetName());
     bkgPdfs.insert(pair<string,RooAbsPdf*>(cachePdf->GetName(),cachePdf));
   }
   else {
@@ -520,8 +521,8 @@ void PdfModelBuilder::makeSBPdfs(bool cache){
     RooAbsPdf *sbMod = new RooAddPdf(Form("sb_%s",bkg->first.c_str()),Form("sb_%s",bkg->first.c_str()),RooArgList(*(bkg->second),*sigPdf),RooArgList(*bkgYield,*sigYield));
     if (cache) {
       wsCache->import(*sbMod,RecycleConflictNodes());
-      RooAbsPdf *cachePdf = (RooAbsPdf*)wsCache->pdf(sbMod->GetName());
-      signalModifier = (RooRealVar*)wsCache->var(signalModifier->GetName());
+      RooAbsPdf *cachePdf = (RooAbsPdf*)getObj(wsCache,sbMod->GetName());
+      signalModifier = (RooRealVar*)getObj(wsCache,signalModifier->GetName());
       sbPdfs.insert(pair<string,RooAbsPdf*>(cachePdf->GetName(),cachePdf));
     }
     else {
