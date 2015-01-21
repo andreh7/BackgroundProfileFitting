@@ -80,7 +80,7 @@ $(LIBDIR)/lib$(LIBNAME).so: $(OBJS) $(ROOT_OBJ)
 
 $(ROOT_DICT): $(filter-out utils.cc, $(SRCS)) $(filter-out $(PWD)/interface/utils.h, $(HEADERS))
 	@echo Making dictionary $@
-	rootcint -f $@ -c -L$(ROOFITSYS)/lib -I$(ROOFITSYS)/include $(filter-out $(PWD)/interface/utils.h, $(HEADERS))
+	@rootcint -f $@ -c -L$(ROOFITSYS)/lib -I$(ROOFITSYS)/include $(filter-out $(PWD)/interface/utils.h, $(HEADERS))
 	@$(CXX) $(CXXFLAGS) -fPIC -c $(ROOT_DICT) -o $(ROOT_OBJ)
 
 
