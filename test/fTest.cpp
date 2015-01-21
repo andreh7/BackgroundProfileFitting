@@ -40,6 +40,8 @@
 #include <Math/ProbFunc.h>
 #include <iomanip>
 
+#include "utils.h"
+
 using namespace std;
 using namespace RooFit;
 using namespace boost;
@@ -52,22 +54,6 @@ int nBinsForMass = 50;
 
 TRandom3 *RandomGen = new TRandom3();
 
-//----------------------------------------------------------------------
-/** @return a given object from the RooWorkspace or print an error
-    message (and exit the program) with the name of the object
-    which could not be found. */
-TObject *
-getObj(RooWorkspace *ws, const std::string &objName)
-{
-  TObject *retval = ws->obj(objName.c_str());
-  if (retval == NULL)
-  {
-    cerr << "could not find object '" << objName << "' in workspace " << ws->GetName() << ", exiting" << endl;
-    exit(1);
-  }
-
-  return retval;
-}
 //----------------------------------------------------------------------
 
 /** replaces sequences of the form  {varname} by the corresponding value

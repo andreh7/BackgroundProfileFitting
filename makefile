@@ -77,10 +77,10 @@ $(OBJDIR)/%.$(OBJ_EXT): $(SRCDIR)/%.cc $(ROOT_DICT)
 $(LIBDIR)/lib$(LIBNAME).so: $(OBJS) $(ROOT_OBJ)
 	@echo Building shared library $@
 	@$(LD) $(LDFLAGS) -o $(LIBDIR)/lib$(LIBNAME).so $^ $(LIBS)
-	
-$(ROOT_DICT): $(SRCS) $(HEADERS)
+
+$(ROOT_DICT): $(filter-out utils.cc, $(SRCS)) $(filter-out $(PWD)/interface/utils.h, $(HEADERS))
 	@echo Making dictionary $@
-	@rootcint -f $@ -c -L$(ROOFITSYS)/lib -I$(ROOFITSYS)/include $(HEADERS)
+	rootcint -f $@ -c -L$(ROOFITSYS)/lib -I$(ROOFITSYS)/include $(filter-out $(PWD)/interface/utils.h, $(HEADERS))
 	@$(CXX) $(CXXFLAGS) -fPIC -c $(ROOT_DICT) -o $(ROOT_OBJ)
 
 
