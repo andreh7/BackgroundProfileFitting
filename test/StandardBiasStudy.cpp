@@ -30,6 +30,7 @@
 
 #include "../interface/ProfileMultiplePdfs.h"
 #include "../interface/PdfModelBuilder.h"
+#include "../interface/utils.h"
 
 using namespace std;
 using namespace RooFit;
@@ -277,8 +278,8 @@ int main(int argc, char* argv[]){
   RooDataHist *dataBinned = (RooDataHist*)bkgWS->data(Form("data_mass_cat%d", cat));
   
 
-  RooDataHist *sigMC = (RooDataHist*)sigWS->data(Form("roohist_sig_ggh_mass_m%d_cat%d",expectSignalMass,cat));
-  RooDataHist *sigMC_vbf = (RooDataHist*)sigWS->data(Form("roohist_sig_vbf_mass_m%d_cat%d",expectSignalMass,cat));
+  RooDataHist *sigMC = (RooDataHist*)getObj(sigWS, Form("roohist_sig_ggh_mass_m%d_cat%d",expectSignalMass,cat));
+  RooDataHist *sigMC_vbf = (RooDataHist*)getObj(sigWS,Form("roohist_sig_vbf_mass_m%d_cat%d",expectSignalMass,cat));
   //RooDataSet *sigMC_wh = (RooDataSet*)sigWS->data(Form("sig_wh_mass_m%d_cat%d",expectSignalMass,cat));
   //RooDataSet *sigMC_zh = (RooDataSet*)sigWS->data(Form("sig_zh_mass_m%d_cat%d",expectSignalMass,cat));
   //RooDataSet *sigMC_tth = (RooDataSet*)sigWS->data(Form("sig_tth_mass_m%d_cat%d",expectSignalMass,cat));
