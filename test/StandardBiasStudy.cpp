@@ -190,13 +190,20 @@ int main(int argc, char* argv[]){
   RooWorkspace *bkgWS = (RooWorkspace*)bkgFile->Get(bkgWSName.c_str());
   RooWorkspace *sigWS = (RooWorkspace*)sigFile->Get(sigWSName.c_str());
 
-  if (!bkgWS || !sigWS){
-    cerr << "ERROR - one of signal or background workspace is NULL" << endl;
-    cerr << " (looked for ) signal = " << sigWSName.c_str() << ", background = " << bkgWSName.c_str() <<endl;
+  if (bkgWS == NULL)
+  {
+    cerr << "ERROR - background workspace " << bkgWSName << " not found in file " << bkgFileName.c_str() << endl;
     exit(1);
   }
 
   RooRealVar *mass = (RooRealVar*)bkgWS->var("CMS_hll_mass");
+  if (sigWS == NULL)
+  {
+    cerr << "ERROR - signal workspace " << sigWSName << " not found in file " << bkgFileName.c_str() << endl;
+    exit(1);
+  }
+
+
   //mass->setRange(110, 160);
   //RooRealVar *mass = new RooRealVar("CMS_hll_mass","CMS_hll_mass",110,160);
   RooRealVar *mu = new RooRealVar("mu","mu",0.,mu_low,mu_high);
