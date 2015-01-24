@@ -818,15 +818,15 @@ int main(int argc, char* argv[]){
   
   vector<string> functionClasses;
   functionClasses.push_back("Bernstein");
-  //functionClasses.push_back("Exponential");
-  //functionClasses.push_back("PowerLaw");
-  //functionClasses.push_back("Laurent");
-  functionClasses.push_back("HMM");
-  functionClasses.push_back("MSSM");
+  functionClasses.push_back("Exponential");
+  functionClasses.push_back("PowerLaw");
+  // functionClasses.push_back("Laurent");
+  // functionClasses.push_back("HMM");
+  // functionClasses.push_back("MSSM");
   map<string,string> namingMap;
   namingMap.insert(pair<string,string>("Bernstein","pol"));
-  //namingMap.insert(pair<string,string>("Exponential","exp"));
-  //namingMap.insert(pair<string,string>("PowerLaw","pow"));
+  namingMap.insert(pair<string,string>("Exponential","exp"));
+  namingMap.insert(pair<string,string>("PowerLaw","pow"));
   //namingMap.insert(pair<string,string>("Laurent","lau"));
   namingMap.insert(pair<string,string>("HMM","hmm"));
   namingMap.insert(pair<string,string>("MSSM","massm"));
