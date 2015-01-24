@@ -935,7 +935,7 @@ int main(int argc, char* argv[]){
           prev_pdf=bkgPdf;
           order++;
         }
-      }
+      } // while prob < 0.05
 
       fprintf(resFile,"%15s & %d & %5.2f & %5.2f \\\\\n",funcType->c_str(),cache_order+1,chi2,prob);
       choices.insert(pair<string,int>(*funcType,cache_order));
@@ -1004,13 +1004,13 @@ int main(int argc, char* argv[]){
            prev_order=order;
            prev_pdf=bkgPdf;
            order++;
-        }
-      }
+          } // if bkgPdf != NULL
+        } // while prob < upperEnvThreshold
       
       fprintf(resFile,"%15s & %d & %5.2f & %5.2f \\\\\n",funcType->c_str(),cache_order+1,chi2,prob);
       choices_envelope.insert(pair<string,std::vector<int> >(*funcType,pdforders));
-      }
-    }
+      } // if saveMultiPdf
+    } // loop over function types
 
     fprintf(resFile,"\\hline\n");
     choices_vec.push_back(choices);
