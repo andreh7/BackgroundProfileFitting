@@ -934,7 +934,7 @@ int main(int argc, char* argv[]){
         cout << "cat " << cat << " " << ' ' << *funcType << ' ' << order << endl;
         cout << "----------------------------------------" << endl;
 
-        RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,Form("ftest_pdf_%d_%s",cat,ext.c_str()).c_str());
+        RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,Form("ftest_pdf_%d_%s",cat,ext.c_str()));
         if (!bkgPdf){
           // assume this order is not allowed
           order++;
