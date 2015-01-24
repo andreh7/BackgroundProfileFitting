@@ -143,9 +143,13 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
 
   while (stat!=0){
     if (ntries>=MaxTries) break;
-    //std::cout << "----------------------------- BEFORE FIT-------------------------------" << std::endl;
-    //params_test->Print("v");
-    //std::cout << "-----------------------------------------------------------------------" << std::endl;
+
+    if (false)
+    {
+      std::cout << "----------------------------- BEFORE FIT " << ntries << " ------------------------------" << std::endl;
+      params_test->Print("v");
+      std::cout << "-----------------------------------------------------------------------" << std::endl;
+    }
 
     //----------
     // check that none of the initial values is nan
