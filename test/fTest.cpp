@@ -167,6 +167,15 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
                                        fitRange
                                        );
     stat = fitTest->status();
+
+    if (true)
+    {
+      std::cout << "----------------------------- AFTER FIT " << ntries << " ------------------------------" << std::endl;
+      std::cout << "fit status: " << stat << endl;
+      params_test->Print("v");
+      std::cout << "-----------------------------------------------------------------------" << std::endl;
+    }
+
     minnll = fitTest->minNll();
 
     // see https://root.cern.ch/phpBB3/viewtopic.php?f=15&t=16764 for the 
