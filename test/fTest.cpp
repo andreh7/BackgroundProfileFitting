@@ -140,11 +140,28 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
   //params_test->Print("v");
   int stat=1;
   double minnll=10e8;
+
   while (stat!=0){
     if (ntries>=MaxTries) break;
     //std::cout << "----------------------------- BEFORE FIT-------------------------------" << std::endl;
     //params_test->Print("v");
     //std::cout << "-----------------------------------------------------------------------" << std::endl;
+
+    //----------
+    // check that none of the initial values is nan
+    // TODO: do we have to delete this one ourselves ?
+    //----------
+    TIterator* it = params_test->createIterator();
+    TObject *obj;
+    while ((obj = it->Next()) != NULL)
+    {
+      RooAbsReal *var = (RooAbsReal*)obj;
+      if (isnan(var->getVal()))
+        cout << "WARNING: initial value before fit of parameter " << var->GetName() << " is " << var->getVal() << endl;
+    }
+
+    //----------
+
     RooFitResult *fitTest = pdf->fitTo(*data,RooFit::Save(1)
 				       ,RooFit::Minimizer("Minuit2","minimize"),
                                        fitRange
