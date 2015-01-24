@@ -168,7 +168,24 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
                                        );
     stat = fitTest->status();
     minnll = fitTest->minNll();
-    if (stat!=0) params_test->assignValueOnly(fitTest->randomizePars());
+
+    // see https://root.cern.ch/phpBB3/viewtopic.php?f=15&t=16764 for the 
+    // meaning of the fit status value
+    // and this link for the Hesse status: https://root.cern.ch/root/htmldoc/ROOT__Minuit2__Minuit2Minimizer.html#ROOT__Minuit2__Minuit2Minimizer:Hesse
+    int hesseStatus = stat / 100;
+
+    if (stat!=0) 
+    {
+      // not everything went well during the fit, randomize 
+      // the parameters based on the current covariance matrix 
+
+      // don't do this when the Hesse matrix is not positive definite
+      // (this would probably take square roots of negative numbers,
+      // what we see is that we get Nans for the initial values 
+      // of the next fit)
+      if (hesseStatus != 3)
+        params_test->assignValueOnly(fitTest->randomizePars());
+    }
     ntries++; 
   }
   *stat_t = stat;
