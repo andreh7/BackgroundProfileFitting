@@ -364,6 +364,9 @@ double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooAbsData *data, std
 
       RooPlot *plot_t = mass->frame();
       binnedtoy->plotOn(plot_t);
+
+      // this causes the many printouts about duplicate objects
+      // in the RooDataSet
       pdf->plotOn(plot_t);//,RooFit::NormRange("fitdata_1,fitdata_2"));
 
       double chi2_t = plot_t->chiSquare(np);
