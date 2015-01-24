@@ -968,10 +968,13 @@ int main(int argc, char* argv[]){
           prev_order=order;
           prev_pdf=bkgPdf;
           order++;
+
+          fprintf(resFile,"%15s & %d & %5.2f & %5.2f \\\\\n",funcType->c_str(),cache_order+1,chi2,prob);
         }
       } // while prob < 0.05
 
-      fprintf(resFile,"%15s & %d & %5.2f & %5.2f \\\\\n",funcType->c_str(),cache_order+1,chi2,prob);
+      // originally, this was just printed in the end
+      // fprintf(resFile,"%15s & %d & %5.2f & %5.2f \\\\\n",funcType->c_str(),cache_order+1,chi2,prob);
       choices.insert(pair<string,int>(*funcType,cache_order));
       pdfs.insert(pair<string,RooAbsPdf*>(Form("%s%d",funcType->c_str(),cache_order),cache_pdf));
 
@@ -1048,6 +1051,15 @@ int main(int argc, char* argv[]){
 
     fprintf(resFile,"\\hline\n");
     choices_vec.push_back(choices);
+    
+    fprintf(resFile, "choices:\\\\\n");
+
+    // also write the recommended orders to the LaTeX file
+    for (map<string,int>::iterator it = choices.begin(); it != choices.end(); ++it)
+    {
+      fprintf(resFile, "%s: %d\\\\\n", it->first.c_str(), it->second);
+    }
+
     choices_envelope_vec.push_back(choices_envelope);
     pdfs_vec.push_back(pdfs);
 
