@@ -658,6 +658,9 @@ int main(int argc, char* argv[]){
   // fit range specification as min,max
   string fitRangeSpec;
 
+  // disable plotting (false -> enable plotting)
+  bool noplots = false;
+
   po::options_description desc("Allowed options");
   desc.add_options()
     ("help,h",                                                                                  "Show help")
@@ -672,6 +675,7 @@ int main(int argc, char* argv[]){
     ("runFtestCheckWithToys", 									"When running the F-test, use toys to calculate pvals (and make plots) ")
     ("is2011",                                                                                  "Run 2011 config")
     ("unblind",  									        "Dont blind plots")
+    ("noplot",                                                                                  "do not produce plots (in some cases plotting can cause problems)")
     ("obsname", po::value<string>(&obsNameTemplate),                                            "name template for observed data objects in workspace")
     ("fitrange", po::value<string>(&fitRangeSpec),                                              "fit range specified as min,max")
     ("verbose,v",                                                                               "Run with more output")
@@ -679,6 +683,7 @@ int main(int argc, char* argv[]){
   po::variables_map vm;
   po::store(po::parse_command_line(argc,argv,desc),vm);
   po::notify(vm);
+
   if (vm.count("help")) { cout << desc << endl; exit(1); }
   if (vm.count("is2011")) is2011=true;
 	if (vm.count("unblind")) BLIND=false;
@@ -686,6 +691,8 @@ int main(int argc, char* argv[]){
 
   if (vm.count("verbose")) verbose=true;
   if (vm.count("runFtestCheckWithToys")) runFtestCheckWithToys=true;
+
+  noplots = (vm.count("noplot") != 0);
 
   // process fit range specification
   RooCmdArg fitRange;
@@ -918,8 +925,8 @@ int main(int argc, char* argv[]){
 	  }
 	  double gofProb=0;
 	  // otherwise we get it later ...
-          if (!saveMultiPdf) plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),fitStatus,&gofProb, fitRange);
           cout << "\t " << *funcType << " " << order << " " << prevNll << " " << thisNll << " " << chi2 << " " << prob << endl;
+          if (!saveMultiPdf && !noplots) plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),fitStatus,&gofProb, fitRange);
           //fprintf(resFile,"%15s && %d && %10.2f && %10.2f && %10.2f \\\\\n",funcType->c_str(),order,thisNll,chi2,prob);
           prevNll=thisNll;
           cache_order=prev_order;
@@ -973,7 +980,8 @@ int main(int argc, char* argv[]){
 
 	   // Calculate goodness of fit for the thing to be included (will use toys for lowstats)!
 	   double gofProb =0; 
-           plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),fitStatus,&gofProb, fitRange);
+           if (! noplots)
+             plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),fitStatus,&gofProb, fitRange);
 
 	   if ((prob < upperEnvThreshold) ) { // Looser requirements for the envelope
 		
@@ -1009,7 +1017,8 @@ int main(int argc, char* argv[]){
     choices_envelope_vec.push_back(choices_envelope);
     pdfs_vec.push_back(pdfs);
 
-    plot(mass,pdfs,data,Form("%s/truths_cat%d",outDir.c_str(),cat),cat);
+    if (! noplots)
+      plot(mass,pdfs,data,Form("%s/truths_cat%d",outDir.c_str(),cat),cat);
 
     if (saveMultiPdf){
 
@@ -1038,7 +1047,9 @@ int main(int argc, char* argv[]){
 	  outputws->import(catIndex);
 	  outputws->import(dataBinned);
 	  outputws->import(*data);
-    	  plot(mass,pdf,&catIndex,data,fitRange, Form("%s/multipdf_cat%d",outDir.c_str(),cat),cat,bestFitPdfIndex);
+
+          if (! noplots)
+            plot(mass,pdf,&catIndex,data,fitRange, Form("%s/multipdf_cat%d",outDir.c_str(),cat),cat,bestFitPdfIndex);
 
     }
     
