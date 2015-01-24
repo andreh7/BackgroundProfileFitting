@@ -30,6 +30,7 @@
 
 #include "../interface/ProfileMultiplePdfs.h"
 #include "../interface/PdfModelBuilder.h"
+#include "../interface/utils.h"
 
 using namespace std;
 using namespace RooFit;
@@ -124,6 +125,7 @@ int main(int argc, char* argv[]){
   bool throwHybridToys=false;
   vector<float> switchMass;
   vector<string> switchFunc;
+  string recoMassName;
 
   TRandom3* generator=new TRandom3(0);
 
@@ -134,6 +136,7 @@ int main(int argc, char* argv[]){
     ("bkgfilename,b", po::value<string>(&bkgFileName),                                          "Background file name")
     ("sigwsname", po::value<string>(&sigWSName)->default_value("cms_hgg_workspace"),            "Signal workspace name")
     ("bkgwsname", po::value<string>(&bkgWSName)->default_value("cms_hgg_workspace"),            "Background workspace name")
+    ("massvar",   po::value<string>(&recoMassName)->default_value("CMS_hll_mass"),              "reconstructed mass variable name")
     ("outfilename,o", po::value<string>(&outFileName)->default_value("BiasStudyOut.root"),      "Output file name")
     ("datfile,d", po::value<string>(&datFileName)->default_value("config.dat"),                 "Name of datfile containing pdf info")
     ("outDir,D", po::value<string>(&outDir)->default_value("./"),                               "Name of out directory for plots")
@@ -189,13 +192,20 @@ int main(int argc, char* argv[]){
   RooWorkspace *bkgWS = (RooWorkspace*)bkgFile->Get(bkgWSName.c_str());
   RooWorkspace *sigWS = (RooWorkspace*)sigFile->Get(sigWSName.c_str());
 
-  if (!bkgWS || !sigWS){
-    cerr << "ERROR - one of signal or background workspace is NULL" << endl;
-    cerr << " (looked for ) signal = " << sigWSName.c_str() << ", background = " << bkgWSName.c_str() <<endl;
+  if (bkgWS == NULL)
+  {
+    cerr << "ERROR - background workspace " << bkgWSName << " not found in file " << bkgFileName.c_str() << endl;
     exit(1);
   }
 
-  RooRealVar *mass = (RooRealVar*)bkgWS->var("CMS_hll_mass");
+  if (sigWS == NULL)
+  {
+    cerr << "ERROR - signal workspace " << sigWSName << " not found in file " << bkgFileName.c_str() << endl;
+    exit(1);
+  }
+
+
+  RooRealVar *mass = (RooRealVar*)getObj(bkgWS,recoMassName);
   //mass->setRange(110, 160);
   //RooRealVar *mass = new RooRealVar("CMS_hll_mass","CMS_hll_mass",110,160);
   RooRealVar *mu = new RooRealVar("mu","mu",0.,mu_low,mu_high);
@@ -277,8 +287,8 @@ int main(int argc, char* argv[]){
   RooDataHist *dataBinned = (RooDataHist*)bkgWS->data(Form("data_mass_cat%d", cat));
   
 
-  RooDataHist *sigMC = (RooDataHist*)sigWS->data(Form("roohist_sig_ggh_mass_m%d_cat%d",expectSignalMass,cat));
-  RooDataHist *sigMC_vbf = (RooDataHist*)sigWS->data(Form("roohist_sig_vbf_mass_m%d_cat%d",expectSignalMass,cat));
+  RooDataHist *sigMC = (RooDataHist*)getObj(sigWS, Form("roohist_sig_ggh_mass_m%d_cat%d",expectSignalMass,cat));
+  RooDataHist *sigMC_vbf = (RooDataHist*)getObj(sigWS,Form("roohist_sig_vbf_mass_m%d_cat%d",expectSignalMass,cat));
   //RooDataSet *sigMC_wh = (RooDataSet*)sigWS->data(Form("sig_wh_mass_m%d_cat%d",expectSignalMass,cat));
   //RooDataSet *sigMC_zh = (RooDataSet*)sigWS->data(Form("sig_zh_mass_m%d_cat%d",expectSignalMass,cat));
   //RooDataSet *sigMC_tth = (RooDataSet*)sigWS->data(Form("sig_tth_mass_m%d_cat%d",expectSignalMass,cat));
