@@ -889,7 +889,12 @@ int main(int argc, char* argv[]){
       std::vector<int> pdforders;
 
       while (prob<0.05){
-        RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,Form("ftest_pdf_%d_%s",cat,ext.c_str()));
+
+        cout << "----------------------------------------" << endl;
+        cout << "cat " << cat << " " << ' ' << *funcType << ' ' << order << endl;
+        cout << "----------------------------------------" << endl;
+
+        RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,Form("ftest_pdf_%d_%s",cat,ext.c_str()).c_str());
         if (!bkgPdf){
           // assume this order is not allowed
           order++;
