@@ -968,8 +968,15 @@ int main(int argc, char* argv[]){
 	  }
 	  double gofProb=0;
 	  // otherwise we get it later ...
-          cout << "\t " << *funcType << " " << order << " " << prevNll << " " << thisNll << " " << chi2 << " " << prob << endl;
           if (!saveMultiPdf && !noplots) plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),fitStatus,&gofProb, fitRange);
+
+          cout << "\t " << *funcType 
+               << " " << order 
+               << " prevNLL=" << prevNll 
+               << " thisNll=" << thisNll 
+               << " chi2=" << chi2 
+               << " prob=" << prob << endl;
+
           //fprintf(resFile,"%15s && %d && %10.2f && %10.2f && %10.2f \\\\\n",funcType->c_str(),order,thisNll,chi2,prob);
           prevNll=thisNll;
           cache_order=prev_order;
