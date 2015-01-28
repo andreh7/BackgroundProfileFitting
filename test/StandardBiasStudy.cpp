@@ -147,7 +147,7 @@ int main(int argc, char* argv[]){
     ("datfile,d", po::value<string>(&datFileName)->default_value("config.dat"),                 "Name of datfile containing pdf info")
     ("outDir,D", po::value<string>(&outDir)->default_value("./"),                               "Name of out directory for plots")
     ("cat,c", po::value<int>(&cat),                                                             "Category")
-    ("bkgOnly",                                                                                 "bkg Only")
+    ("bkgOnly",                                                                                 "fit background only (fix fitted signal strength to zero)")
     ("constraintMu",                                                                            "consraint on mu")
     ("constraintMuWidth",  po::value<float>(&constrainMuWidth)->default_value(0.7),             "consraint on mu width")
     ("ntoys,t", po::value<int>(&ntoys)->default_value(0),                                       "Number of toys to run")
