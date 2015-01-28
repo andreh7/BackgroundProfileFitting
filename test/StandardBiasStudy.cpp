@@ -274,7 +274,7 @@ int main(int argc, char* argv[]){
   //TH1F *muDistAIC = new TH1F("muDistAIC","muDistAIC",int(20*(mu_high-mu_low)),mu_low,mu_high);
   
   mass->setBins(100, "mybinning");
-  RooDataSet *data = (RooDataSet*)bkgWS->data(Form("data_mass_cat%d", cat));
+  RooDataSet *data = (RooDataSet*) getObj(bkgWS,Form("data_cat%d", cat));
   //RooDataSet *reduced = (RooDataSet*)data->reduce("CMS_hll_mass > 110.5 && CMS_hll_mass < 160.5");
   //RooDataHist *dataBinned = new RooDataHist(Form("roohist_data_mass_cat%d",cat),Form("roohist_data_mass_cat%d",cat),RooArgSet(*mass),*data);
   //RooDataHist *dataBinned = new RooDataHist(Form("roohist_data_mass_cat%d",cat),Form("roohist_data_mass_cat%d",cat), RooArgSet(*mass), "mybinning");
@@ -512,7 +512,7 @@ int main(int argc, char* argv[]){
 	    continue;
 	  }
 
-	mu_= testModel.wsCache->var(mu->GetName())->getVal();
+	mu_= ((RooRealVar *)(getObj(testModel.wsCache,mu->GetName())))->getVal();
 	
 	if (testModel.wsCache->var(mu->GetName())->hasAsymError()) {
 	  double delta = mu_-expectSignal ;
