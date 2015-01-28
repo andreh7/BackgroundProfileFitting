@@ -41,6 +41,12 @@ void readDatFile(string datFileName, int cat, vector<pair<int,pair<string,string
  
   ifstream datfile;
   datfile.open(datFileName.c_str());
+  if (! datfile.is_open())
+  {
+    cerr << "failed to open datfile '" << datFileName << "', exiting" << endl;
+    exit(1);
+  }
+
   bool foundCat=false;
   if (datfile.fail()) return;
   while (datfile.good()){
@@ -186,7 +192,17 @@ int main(int argc, char* argv[]){
   }
   
   TFile *bkgFile = TFile::Open(bkgFileName.c_str());
+  if (bkgFile == NULL)
+  {
+    cerr << "failed to open background workspace file '" << bkgFileName << "'" << endl;
+    exit(1);
+  }
   TFile *sigFile = TFile::Open(sigFileName.c_str());
+  if (sigFile == NULL)
+  {
+    cerr << "failed to open signal workspace file '" << sigFileName << "'" << endl;
+    exit(1);
+  }
 
   //RooWorkspace *bkgWS = (RooWorkspace*)bkgFile->Get("cms_hgg_workspace");
   RooWorkspace *bkgWS = (RooWorkspace*)bkgFile->Get(bkgWSName.c_str());
