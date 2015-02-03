@@ -557,6 +557,8 @@ void PdfModelBuilder::plotPdfsToData(RooAbsData *data, int binning, string name,
     if (specPdf && it->first!=specificPdfName && specificPdfName!="NONE") continue;
     obs_var->Print();
     RooPlot *plot = obs_var->frame();
+
+    // draw the toy
     data->plotOn(plot,Binning(binning));
 
     if (specificPdfName!="NONE") 
@@ -579,7 +581,10 @@ void PdfModelBuilder::plotPdfsToData(RooAbsData *data, int binning, string name,
 		myarg->setVal( cacheVar->getVal() );
 	      }
 	  }
+
+	// draw the PDF
 	it->second->plotOn(plot);
+
 	if (resetAfterPlot)
 	  {
 	    std::pair<string,float> map_pair;
@@ -596,6 +601,8 @@ void PdfModelBuilder::plotPdfsToData(RooAbsData *data, int binning, string name,
   }
   delete canv;
 }
+
+//----------------------------------------------------------------------
 
 void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool print, bool resetAfterFit, bool runMinosOnMu, bool constrainMu){
   
@@ -691,6 +698,8 @@ void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool
 void PdfModelBuilder::setSeed(int seed){
   RooRandom::randomGenerator()->SetSeed(seed);
 }
+
+//----------------------------------------------------------------------
 
 RooDataSet* PdfModelBuilder::makeHybridDataset(vector<float> switchOverMasses, vector<RooDataSet*> dataForHybrid){
   
