@@ -27,6 +27,7 @@ parser.add_option("--takeOtherFiles",type="str",help="Copy these files over to b
 parser.add_option("","--skipPlots",default=False,action="store_true",help="Don\'t plot all the envelopes")
 parser.add_option("","--bkgOnly",default=False,action="store_true",help="Background only toys (mu forced to 0)")
 parser.add_option("","--useCondor",dest="useCondor",default=False,action="store_true",help="Submit locally using condor")
+parser.add_option("","--interactive", default=False,action="store_true",help="run interactively instead of submitting jobs")
 parser.add_option("","--copyWorkspace",dest="copyWorkspace",default=False,action="store_true",help="Copy the workspaces into the running sandbox")
 parser.add_option("","--dryRun",dest="dryRun",default=False,action="store_true",help="Don't submit")
 (options,args)=parser.parse_args()
@@ -43,6 +44,12 @@ if options.eosPath:
   if '/eos/cms' in options.eosPath:
     options.eosPath = options.eosPath.split('/eos/cms')[1]
   os.system('cmsMkdir %s'%options.eosPath)
+
+if options.interactive and options.useCondor:
+  print >> sys.stderr,"--interactive and --useCondor are mutually exclusive"
+  sys.exit(1)
+
+#----------------------------------------------------------------------
 
 def writeSubScript(cat,mlow,mhigh,outdir,muInject,massInject,constraintMu=0,constraintMuWidth=0):
   cat = int(cat)
@@ -103,7 +110,16 @@ def writeSubScript(cat,mlow,mhigh,outdir,muInject,massInject,constraintMu=0,cons
     if not options.dryRun:
       if (not options.useCondor):
 
-        os.system('bsub -q %s -o %s.log %s'%(options.queue,f.name,f.name))
+        if options.interactive:
+          # run directly
+          res = os.system(f.name)
+          if res != 0:
+            print >> sys.stderr,"running %s failed, exiting" % f.name
+            sys.exit(1)
+        else:
+          # submit to LSF
+          os.system('bsub -q %s -o %s.log %s'%(options.queue,f.name,f.name))
+          numSubmitted += 1
       else:
         fc = open('%s/%s/sub_cat%d_job%d_condor'%(os.getcwd(),outdir,cat,j),'w')
         fc.write('universe = vanilla\n')
