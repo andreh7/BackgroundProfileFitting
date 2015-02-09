@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import sys, os
+
 from optparse import OptionParser
 parser=OptionParser()
 parser.add_option("-D","--readFromDat",dest="readFromDat",type="str",help="Read these run options from datfile")
@@ -29,7 +31,14 @@ parser.add_option("","--copyWorkspace",dest="copyWorkspace",default=False,action
 parser.add_option("","--dryRun",dest="dryRun",default=False,action="store_true",help="Don't submit")
 (options,args)=parser.parse_args()
 
-import os
+#----------
+
+if not os.environ.has_key('CMSSW_BASE'):
+  print >> sys.stderr,"CMSSW_BASE environment variable not set. Did you initialize a CMSSW environment ?"
+  sys.exit(1)
+
+#----------
+
 if options.eosPath:
   if '/eos/cms' in options.eosPath:
     options.eosPath = options.eosPath.split('/eos/cms')[1]
