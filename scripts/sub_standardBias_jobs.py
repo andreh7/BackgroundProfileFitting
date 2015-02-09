@@ -102,18 +102,34 @@ def writeSubScript(cat,mlow,mhigh,outdir,muInject,massInject,constraintMu=0,cons
     f.write('rm -f %s.fail\n'%(f.name))
     f.write('rm -f %s.run\n'%(f.name))
     f.write('rm -f %s.log\n'%(f.name))
-    f.write('cd %s\n'%os.getcwd())
-    f.write('eval `scramv1 runtime -sh`\n')
-    f.write('cd -\n')
+
+    # initialize CMSSW environment
+    # f.write('if [ -z "$CMSSW_BASE" ]; then eval `scramv1 runtime -sh` ; fi\n')
+
+    print >> f,"cd " + os.environ['CMSSW_BASE'] + " && eval `scram runtime -sh`"
+
+    print >> f,'if [ -n "$WORKDIR" ] ; then cd $WOKRDIR ; else cd %s; fi' % os.getcwd()
+
+    # f.write('cd -\n')
+    print >> f,'if [ -n "$WORKDIR" ] ; then '
+    print >> f,"  cd $WORKDIR"
+
     if (options.copyWorkspace):
       f.write('cp %s .\n'%os.path.abspath(options.sigfilename))
       f.write('cp %s .\n'%os.path.abspath(options.bkgfilename))
-    f.write('cp %s .\n'%os.path.abspath(options.datfile))
-    f.write('cp %s/bin/StandardBiasStudy .\n'%(os.getcwd()))
+      f.write('cp %s .\n'%os.path.abspath(options.datfile))
+      f.write('cp %s/bin/StandardBiasStudy .\n'%(os.getcwd()))
+
     if options.takeOtherFiles:
-     for sandbox_file in options.takeOtherFiles.split(','):
-       f.write('cp %s . \n'%os.path.abspath(sandbox_file))
+      for sandbox_file in options.takeOtherFiles.split(','):
+        f.write('cp %s . \n'%os.path.abspath(sandbox_file))
+
+    print >> f,"fi"
+
+
+
     f.write('touch %s.run\n'%(f.name))
+
     execline = subline + ' -j %d -o StandardBiasStudyOut_cat%d_job%d.root'%(j,cat,j)
     f.write('if ( %s ) then \n'%execline)
     if options.eosPath:
@@ -155,8 +171,16 @@ def writeSubScript(cat,mlow,mhigh,outdir,muInject,massInject,constraintMu=0,cons
         fc.write('log = %s.log\n'%(f.name))
         fc.write('queue 1\n')
         os.system('condor_submit %s'%(fc.name))
+        numSubmitted += 1
     else:
       print 'bsub -q %s -o %s.log %s'%(options.queue,f.name,f.name)
+
+
+  return numSubmitted
+
+#----------------------------------------------------------------------
+
+numSubmitted = 0
 
 if not options.readFromDat:
   for cat in options.cats:
@@ -167,7 +191,9 @@ if not options.readFromDat:
       if options.eosPath:
         os.system('cmsMkdir %s/%s'%(options.eosPath,storage_dir))
       os.system('mkdir -p %s'%storage_dir)
-      writeSubScript(cat,options.mulow,options.muhigh,options.mustep,storage_dir,mu,options.expectSignalMasses[i])
+      numSubmitted += writeSubScript(cat,options.mulow,options.muhigh,
+                                     # options.mustep,
+                                     storage_dir,mu,options.expectSignalMasses[i])
 
 else:
   f = open(options.readFromDat)
@@ -196,5 +222,8 @@ else:
       if options.eosPath:
         os.system('cmsMkdir %s/%s'%(options.eosPath,storage_dir))
       os.system('mkdir -p %s'%storage_dir)
-      writeSubScript(cat,mlow,mhigh,storage_dir,injectmu,injectmass,constrainMu,constrainMuWidth)
 
+      numSubmitted += writeSubScript(cat,mlow,mhigh,storage_dir,injectmu,injectmass,constrainMu,constrainMuWidth)
+
+
+print numSubmitted,"jobs submitted"
