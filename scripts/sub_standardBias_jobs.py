@@ -57,16 +57,41 @@ def writeSubScript(cat,mlow,mhigh,outdir,muInject,massInject,constraintMu=0,cons
   massInject=float(massInject)
   constrainMu=int(constraintMu)
   constrainMuWidth=float(constraintMuWidth)
-  
-  subline = './StandardBiasStudy -s %s -b %s --sigwsname %s --bkgwsname %s -d %s -c %d -L %3.1f -H %3.1f -t %d -D %s --expectSignal=%3.1f --expectSignalMass=%3d'%(os.path.basename(options.sigfilename) if options.copyWorkspace else options.sigfilename,os.path.basename(options.bkgfilename) if options.copyWorkspace else options.bkgfilename,options.sigwsname,options.bkgwsname,os.path.basename(options.datfile),cat,mlow,mhigh,options.toysperjob,os.path.abspath(outdir),muInject,massInject)
 
-  
+  numSubmitted = 0
 
-  if options.skipPlots: subline += ' --skipPlots'
-  if options.bkgOnly: subline += ' --bkgOnly'
-  if (constrainMu>0 or constrainMuWidth>0):
-    subline+= ' --constraintMu --constraintMuWidth '+str(constrainMuWidth)
+  cmdParts = [
+    os.path.abspath('bin/StandardBiasStudy'),
+    '-s %s' % (os.path.basename(options.sigfilename) if options.copyWorkspace else options.sigfilename),
+    '-b %s' % (os.path.basename(options.bkgfilename) if options.copyWorkspace else options.bkgfilename),
+    '--sigwsname %s' % options.sigwsname, 
+    '--bkgwsname %s' % options.bkgwsname,
+    # '-d %s' % os.path.basename(options.datfile),
+    '-d %s' % os.path.abspath(options.datfile),
+    '-c %d' % cat,
+    '-L %3.1f' % mlow,
+    '-H %3.1f' % mhigh,
+    '-t %d' % options.toysperjob,
+    '-D %s' % os.path.abspath(outdir),
+    '--expectSignal=%3.1f' % muInject,
+    '--expectSignalMass=%3d' % massInject,
+    " --massvar " + options.massVar,
+    ]
+  
+  if options.skipPlots:
+    cmdParts.append('--skipPlots')
     
+  if options.bkgOnly:
+    cmdParts.append('--bkgOnly')
+
+  if (constrainMu>0 or constrainMuWidth>0):
+    cmdParts.extend([
+      '--constraintMu',
+      '--constraintMuWidth '+str(constrainMuWidth)
+      ])
+
+  subline = " ".join(cmdParts)
+
   for j in range(options.jstart,options.njobs):
     f = open('%s/%s/sub_cat%d_job%d.sh'%(os.getcwd(),outdir,cat,j),'w')
     f.write('#!/bin/bash\n')
