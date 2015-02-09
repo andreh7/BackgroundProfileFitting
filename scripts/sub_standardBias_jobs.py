@@ -9,6 +9,7 @@ parser.add_option("-s","--sigfilename",dest="sigfilename",type="str",help="Input
 parser.add_option("-b","--bkgfilename",dest="bkgfilename",type="str",help="Input background/data workspace file")
 parser.add_option("-w","--sigwsname",dest="sigwsname",type="str",help="Input signal workspace name",default="cms_hgg_workspace")
 parser.add_option("-B","--bkgwsname",dest="bkgwsname",type="str",help="Input background/data workspace name",default="cms_hgg_workspace")
+parser.add_option("","--massvar",dest="massVar",default="CMS_hll_mass",help="name of reconstructed mass variable")
 parser.add_option("-d","--datfile",dest="datfile",type="str",help="Config datfile")
 parser.add_option("-o","--outerDir",dest="outerDir",help="Dir name")
 parser.add_option("-c","--cats",dest="cats",default=[],action="append")
