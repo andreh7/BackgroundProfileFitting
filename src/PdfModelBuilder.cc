@@ -645,6 +645,8 @@ void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool
 
     fit = (RooFitResult*)it->second->fitTo(*data,fitOptions);//, RooFit::Minimizer("Minuit2"));
 
+    cout << "FITTING TO " << it->second->GetName() << endl;
+
     this->fitTimings.start(it->second->GetName());
     if (print){
       cout << "Fit Res Before: " << endl;
@@ -660,8 +662,9 @@ void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool
     this->fitTimings.stop(it->second->GetName());
 
     if (fit->status()!=0) 
-      cout << "!!!! FIT DID NOT CONVERGE !!!!!" << endl;
-    if (print){
+      cout << "!!!! FIT DID NOT CONVERGE FOR " << it->second->GetName() << " status=" << fit->status() << " !!!!!" << endl;
+    else
+      cout << "FIT CONVERGED FOR " << it->second->GetName() << endl;
       cout << "Fit Res After: " << endl;
       fit->floatParsFinal().Print("v");
     }
