@@ -643,11 +643,19 @@ void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool
 	fitOptions.Add(h3);
       } 
 
-    fit = (RooFitResult*)it->second->fitTo(*data,fitOptions);//, RooFit::Minimizer("Minuit2"));
+
+    fitOptions.Add(new RooCmdArg(Range(110,160)));
+
+    // TEST
+    // fitOptions.Add(new RooCmdArg(Strategy(2)));
+    // fitOptions.Add(new RooCmdArg(Verbose(true)));
+    fitOptions.Add(new RooCmdArg(Minimizer("Minuit2")));
+
 
     cout << "FITTING TO " << it->second->GetName() << endl;
 
     this->fitTimings.start(it->second->GetName());
+    fit = (RooFitResult*)it->second->fitTo(*data,fitOptions);//, RooFit::Minimizer("Minuit2"));
     if (print){
       cout << "Fit Res Before: " << endl;
       fit->floatParsInit().Print("v");
