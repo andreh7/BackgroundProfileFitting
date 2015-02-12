@@ -34,6 +34,8 @@ using namespace std;
 using namespace RooFit;
 using namespace boost;
 
+//----------------------------------------------------------------------
+
 PdfModelBuilder::PdfModelBuilder():
   obs_var_set(false),
   signal_modifier_set(false),
@@ -607,7 +609,7 @@ void PdfModelBuilder::plotPdfsToData(RooAbsData *data, int binning, string name,
 //----------------------------------------------------------------------
 
 void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool print, bool resetAfterFit, bool runMinosOnMu, bool constrainMu){
-  
+
   map<string,RooAbsPdf*> pdfSet;
   if (bkgOnly) pdfSet = bkgPdfs;
   else pdfSet = sbPdfs;
@@ -615,6 +617,7 @@ void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool
   float initVal=signalModifier->getVal();
   bool constStatus=signalModifier->isConstant();
   for (map<string,RooAbsPdf*>::iterator it=pdfSet.begin(); it!=pdfSet.end(); it++){
+
     signalModifier->setVal(initVal);
     signalModifier->setConstant(constStatus);
 
@@ -698,7 +701,10 @@ void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool
   }
   if (bkgOnly) bkgHasFit=true;
   else sbHasFit=true;
+
 }
+
+//----------------------------------------------------------------------
 
 void PdfModelBuilder::setSeed(int seed){
   RooRandom::randomGenerator()->SetSeed(seed);
