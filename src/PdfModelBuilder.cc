@@ -665,6 +665,8 @@ void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool
       cout << "!!!! FIT DID NOT CONVERGE FOR " << it->second->GetName() << " status=" << fit->status() << " !!!!!" << endl;
     else
       cout << "FIT CONVERGED FOR " << it->second->GetName() << endl;
+
+    {
       cout << "Fit Res After: " << endl;
       fit->floatParsFinal().Print("v");
     }
