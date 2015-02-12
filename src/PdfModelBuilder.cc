@@ -654,6 +654,8 @@ void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool
 	fit = (RooFitResult*)it->second->fitTo(*data,fitOptions);
       }
 
+    this->fitTimings.stop(it->second->GetName());
+
     if (fit->status()!=0) 
       cout << "!!!! FIT DID NOT CONVERGE !!!!!" << endl;
     if (print){
