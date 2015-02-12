@@ -651,6 +651,17 @@ void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool
     // fitOptions.Add(new RooCmdArg(Verbose(true)));
     fitOptions.Add(new RooCmdArg(Minimizer("Minuit2")));
 
+////    cout << "FITOPTIONS=" << endl;
+////    {
+////      RooLinkedListIter it = fitOptions.iterator();
+////
+////      TObject *obj;
+////      while ((obj = it.Next()) != NULL)
+////	  {
+////	    cout << "  ";
+////	    obj->Print();
+////	  }
+////    }    
 
     cout << "FITTING TO " << it->second->GetName() << endl;
 
