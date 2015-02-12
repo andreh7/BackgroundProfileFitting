@@ -126,18 +126,65 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
   //params_test->Print("v");
   int stat=1;
   double minnll=10e8;
+
   while (stat!=0){
     if (ntries>=MaxTries) break;
-    //std::cout << "----------------------------- BEFORE FIT-------------------------------" << std::endl;
-    //params_test->Print("v");
-    //std::cout << "-----------------------------------------------------------------------" << std::endl;
+
+    if (false)
+    {
+      std::cout << "----------------------------- BEFORE FIT " << ntries << " ------------------------------" << std::endl;
+      params_test->Print("v");
+      std::cout << "-----------------------------------------------------------------------" << std::endl;
+    }
+
+    //----------
+    // check that none of the initial values is nan
+    // TODO: do we have to delete this one ourselves ?
+    //----------
+    TIterator* it = params_test->createIterator();
+    TObject *obj;
+    while ((obj = it->Next()) != NULL)
+    {
+      RooAbsReal *var = (RooAbsReal*)obj;
+      if (isnan(var->getVal()))
+        cout << "WARNING: initial value before fit of parameter " << var->GetName() << " is " << var->getVal() << endl;
+    }
+
+    //----------
+
     RooFitResult *fitTest = pdf->fitTo(*data,RooFit::Save(1)
 				       ,RooFit::Minimizer("Minuit2","minimize"),
                                        fitRange
                                        );
     stat = fitTest->status();
+
+    if (true)
+    {
+      std::cout << "----------------------------- AFTER FIT " << ntries << " ------------------------------" << std::endl;
+      std::cout << "fit status: " << stat << endl;
+      params_test->Print("v");
+      std::cout << "-----------------------------------------------------------------------" << std::endl;
+    }
+
     minnll = fitTest->minNll();
-    if (stat!=0) params_test->assignValueOnly(fitTest->randomizePars());
+
+    // see https://root.cern.ch/phpBB3/viewtopic.php?f=15&t=16764 for the 
+    // meaning of the fit status value
+    // and this link for the Hesse status: https://root.cern.ch/root/htmldoc/ROOT__Minuit2__Minuit2Minimizer.html#ROOT__Minuit2__Minuit2Minimizer:Hesse
+    int hesseStatus = stat / 100;
+
+    if (stat!=0) 
+    {
+      // not everything went well during the fit, randomize 
+      // the parameters based on the current covariance matrix 
+
+      // don't do this when the Hesse matrix is not positive definite
+      // (this would probably take square roots of negative numbers,
+      // what we see is that we get Nans for the initial values 
+      // of the next fit)
+      if (hesseStatus != 3)
+        params_test->assignValueOnly(fitTest->randomizePars());
+    }
     ntries++; 
   }
   *stat_t = stat;
@@ -350,6 +397,9 @@ double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooAbsData *data, std
 
       RooPlot *plot_t = mass->frame();
       binnedtoy->plotOn(plot_t);
+
+      // this causes the many printouts about duplicate objects
+      // in the RooDataSet
       pdf->plotOn(plot_t);//,RooFit::NormRange("fitdata_1,fitdata_2"));
 
       double chi2_t = plot_t->chiSquare(np);
@@ -641,6 +691,9 @@ int main(int argc, char* argv[]){
   // fit range specification as min,max
   string fitRangeSpec;
 
+  // disable plotting (false -> enable plotting)
+  bool noplots = false;
+
   po::options_description desc("Allowed options");
   desc.add_options()
     ("help,h",                                                                                  "Show help")
@@ -655,6 +708,7 @@ int main(int argc, char* argv[]){
     ("runFtestCheckWithToys", 									"When running the F-test, use toys to calculate pvals (and make plots) ")
     ("is2011",                                                                                  "Run 2011 config")
     ("unblind",  									        "Dont blind plots")
+    ("noplot",                                                                                  "do not produce plots (in some cases plotting can cause problems)")
     ("obsname", po::value<string>(&obsNameTemplate),                                            "name template for observed data objects in workspace")
     ("fitrange", po::value<string>(&fitRangeSpec),                                              "fit range specified as min,max")
     ("verbose,v",                                                                               "Run with more output")
@@ -662,6 +716,7 @@ int main(int argc, char* argv[]){
   po::variables_map vm;
   po::store(po::parse_command_line(argc,argv,desc),vm);
   po::notify(vm);
+
   if (vm.count("help")) { cout << desc << endl; exit(1); }
   if (vm.count("is2011")) is2011=true;
 	if (vm.count("unblind")) BLIND=false;
@@ -669,6 +724,8 @@ int main(int argc, char* argv[]){
 
   if (vm.count("verbose")) verbose=true;
   if (vm.count("runFtestCheckWithToys")) runFtestCheckWithToys=true;
+
+  noplots = (vm.count("noplot") != 0);
 
   // process fit range specification
   RooCmdArg fitRange;
@@ -751,15 +808,15 @@ int main(int argc, char* argv[]){
   
   vector<string> functionClasses;
   functionClasses.push_back("Bernstein");
-  //functionClasses.push_back("Exponential");
-  //functionClasses.push_back("PowerLaw");
-  //functionClasses.push_back("Laurent");
-  functionClasses.push_back("HMM");
-  functionClasses.push_back("MSSM");
+  functionClasses.push_back("Exponential");
+  functionClasses.push_back("PowerLaw");
+  // functionClasses.push_back("Laurent");
+  // functionClasses.push_back("HMM");
+  // functionClasses.push_back("MSSM");
   map<string,string> namingMap;
   namingMap.insert(pair<string,string>("Bernstein","pol"));
-  //namingMap.insert(pair<string,string>("Exponential","exp"));
-  //namingMap.insert(pair<string,string>("PowerLaw","pow"));
+  namingMap.insert(pair<string,string>("Exponential","exp"));
+  namingMap.insert(pair<string,string>("PowerLaw","pow"));
   //namingMap.insert(pair<string,string>("Laurent","lau"));
   namingMap.insert(pair<string,string>("HMM","hmm"));
   namingMap.insert(pair<string,string>("MSSM","massm"));
@@ -872,6 +929,11 @@ int main(int argc, char* argv[]){
       std::vector<int> pdforders;
 
       while (prob<0.05){
+
+        cout << "----------------------------------------" << endl;
+        cout << "cat " << cat << " " << ' ' << *funcType << ' ' << order << endl;
+        cout << "----------------------------------------" << endl;
+
         RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,Form("ftest_pdf_%d_%s",cat,ext.c_str()));
         if (!bkgPdf){
           // assume this order is not allowed
@@ -896,8 +958,15 @@ int main(int argc, char* argv[]){
 	  }
 	  double gofProb=0;
 	  // otherwise we get it later ...
-          if (!saveMultiPdf) plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),fitStatus,&gofProb, fitRange);
-          cout << "\t " << *funcType << " " << order << " " << prevNll << " " << thisNll << " " << chi2 << " " << prob << endl;
+          if (!saveMultiPdf && !noplots) plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),fitStatus,&gofProb, fitRange);
+
+          cout << "\t " << *funcType 
+               << " " << order 
+               << " prevNLL=" << prevNll 
+               << " thisNll=" << thisNll 
+               << " chi2=" << chi2 
+               << " prob=" << prob << endl;
+
           //fprintf(resFile,"%15s && %d && %10.2f && %10.2f && %10.2f \\\\\n",funcType->c_str(),order,thisNll,chi2,prob);
           prevNll=thisNll;
           cache_order=prev_order;
@@ -905,10 +974,13 @@ int main(int argc, char* argv[]){
           prev_order=order;
           prev_pdf=bkgPdf;
           order++;
-        }
-      }
 
-      fprintf(resFile,"%15s & %d & %5.2f & %5.2f \\\\\n",funcType->c_str(),cache_order+1,chi2,prob);
+          fprintf(resFile,"%15s & %d & %5.2f & %5.2f \\\\\n",funcType->c_str(),cache_order+1,chi2,prob);
+        }
+      } // while prob < 0.05
+
+      // originally, this was just printed in the end
+      // fprintf(resFile,"%15s & %d & %5.2f & %5.2f \\\\\n",funcType->c_str(),cache_order+1,chi2,prob);
       choices.insert(pair<string,int>(*funcType,cache_order));
       pdfs.insert(pair<string,RooAbsPdf*>(Form("%s%d",funcType->c_str(),cache_order),cache_pdf));
 
@@ -951,7 +1023,8 @@ int main(int argc, char* argv[]){
 
 	   // Calculate goodness of fit for the thing to be included (will use toys for lowstats)!
 	   double gofProb =0; 
-           plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),fitStatus,&gofProb, fitRange);
+           if (! noplots)
+             plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),fitStatus,&gofProb, fitRange);
 
 	   if ((prob < upperEnvThreshold) ) { // Looser requirements for the envelope
 		
@@ -974,20 +1047,30 @@ int main(int argc, char* argv[]){
            prev_order=order;
            prev_pdf=bkgPdf;
            order++;
-        }
-      }
+          } // if bkgPdf != NULL
+        } // while prob < upperEnvThreshold
       
       fprintf(resFile,"%15s & %d & %5.2f & %5.2f \\\\\n",funcType->c_str(),cache_order+1,chi2,prob);
       choices_envelope.insert(pair<string,std::vector<int> >(*funcType,pdforders));
-      }
-    }
+      } // if saveMultiPdf
+    } // loop over function types
 
     fprintf(resFile,"\\hline\n");
     choices_vec.push_back(choices);
+    
+    fprintf(resFile, "choices:\\\\\n");
+
+    // also write the recommended orders to the LaTeX file
+    for (map<string,int>::iterator it = choices.begin(); it != choices.end(); ++it)
+    {
+      fprintf(resFile, "%s: %d\\\\\n", it->first.c_str(), it->second);
+    }
+
     choices_envelope_vec.push_back(choices_envelope);
     pdfs_vec.push_back(pdfs);
 
-    plot(mass,pdfs,data,Form("%s/truths_cat%d",outDir.c_str(),cat),cat);
+    if (! noplots)
+      plot(mass,pdfs,data,Form("%s/truths_cat%d",outDir.c_str(),cat),cat);
 
     if (saveMultiPdf){
 
@@ -1016,7 +1099,9 @@ int main(int argc, char* argv[]){
 	  outputws->import(catIndex);
 	  outputws->import(dataBinned);
 	  outputws->import(*data);
-    	  plot(mass,pdf,&catIndex,data,fitRange, Form("%s/multipdf_cat%d",outDir.c_str(),cat),cat,bestFitPdfIndex);
+
+          if (! noplots)
+            plot(mass,pdf,&catIndex,data,fitRange, Form("%s/multipdf_cat%d",outDir.c_str(),cat),cat,bestFitPdfIndex);
 
     }
     

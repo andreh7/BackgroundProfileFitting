@@ -284,7 +284,13 @@ RooAbsPdf* PdfModelBuilder::getPowerLawSingle(string prefix, int order){
     for (int i=1; i<=npows; i++){
       string name =  Form("%s_p%d",prefix.c_str(),i);
       string ename =  Form("%s_e%d",prefix.c_str(),i);
-      params.insert(pair<string,RooRealVar*>(name, new RooRealVar(name.c_str(),name.c_str(),TMath::Max(-10.,-1.*(i+1)),-10.,0.)));
+
+      params[name] = new RooRealVar(name.c_str(),name.c_str(),
+                                    TMath::Max(-10.,-0.1*(i+1)), // initial value
+                                    -10.,0. // range
+                                    );
+      params[name]->Print();
+
       utilities.insert(pair<string,RooAbsPdf*>(ename, new RooPower(ename.c_str(),ename.c_str(),*obs_var,*params[name])));
       pows->add(*utilities[ename]);
     }
