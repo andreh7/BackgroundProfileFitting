@@ -15,6 +15,10 @@
 #include "RooWorkspace.h"
 #include "TFile.h"
 
+#ifndef __CINT__
+#include "MyTimer.h"
+#endif
+
 using namespace std;
 using namespace RooFit;
 
@@ -73,6 +77,10 @@ class PdfModelBuilder {
     RooAbsPdf* getKeysPdf(string prefix);
     RooAbsPdf* getPdfFromFile(string &prefix);
 
+    /** print information about which fit functions needed how much CPU time
+	on average */
+    void printTimingStatistics(std::ostream &os = std::cout);
+
     RooWorkspace *wsCache;
 
   private:
@@ -110,9 +118,10 @@ class PdfModelBuilder {
     bool keysPdfAttributesSet;
     vector<string> cut_strings;
 
-
-
     int verbosity;
 
+#ifndef __CINT__
+    MyTimer fitTimings;
+#endif
 };
 #endif

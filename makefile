@@ -17,14 +17,14 @@ ifeq ($(UNAME),Darwin)
 $(info Found OS Darwin - using mac osx build)
 BOOST_PATH=/Applications/boost_1_49_0
 USERINCLUDES += -I$(BOOST_PATH)/include/
-USERLIBS += -L$(BOOST_PATH)/libs/ -lboost_regex -lboost_program_options
+USERLIBS += -L$(BOOST_PATH)/libs/ -lboost_regex -lboost_program_options -lboost_timer
 endif
 ifeq ($(UNAME),Linux)
 $(info Found OS Linux - using linux build)
 BOOST_PATH=$(shell cd $(CMSSW_BASE) && scram tool info boost | awk -F= '/BOOST_BASE/ {  print $$2  }')
 USERINCLUDES += -I$(BOOST_PATH)/include/
 USERINCLUDES += -I $(CMSSW_BASE)/src/ -I $(CMSSW_RELEASE_BASE)/src/
-USERLIBS += -L$(BOOST_PATH)/lib/ -lboost_regex -lboost_program_options 
+USERLIBS += -L$(BOOST_PATH)/lib/ -lboost_regex -lboost_program_options -lboost_timer
 USERINCLUDES += -I$(ROOFITSYS)/include
 USERLIBS += -L$(ROOFITSYS)/lib -lRooFit -lRooFitCore
 USERLIBS += -L$(CMSSW_BASE)/lib 
@@ -78,9 +78,12 @@ $(LIBDIR)/lib$(LIBNAME).so: $(OBJS) $(ROOT_OBJ)
 	@echo Building shared library $@
 	@$(LD) $(LDFLAGS) -o $(LIBDIR)/lib$(LIBNAME).so $^ $(LIBS)
 
-$(ROOT_DICT): $(filter-out utils.cc, $(SRCS)) $(filter-out $(PWD)/interface/utils.h, $(HEADERS))
+DICTIGNORECC=utils.cc MyTimer.cc
+DICTIGNOREH=$(PWD)/interface/utils.h $(PWD)/interface/MyTimer.h
+
+$(ROOT_DICT): $(filter-out $(DICTIGNORECC), $(SRCS)) $(filter-out $(DICTIGNOREH), $(HEADERS))
 	@echo Making dictionary $@
-	@rootcint -f $@ -c -L$(ROOFITSYS)/lib -I$(ROOFITSYS)/include $(filter-out $(PWD)/interface/utils.h, $(HEADERS))
+	@rootcint -f $@ -c -L$(ROOFITSYS)/lib -I$(ROOFITSYS)/include $(filter-out $(DICTIGNOREH), $(HEADERS))
 	@$(CXX) $(CXXFLAGS) -fPIC -c $(ROOT_DICT) -o $(ROOT_OBJ)
 
 

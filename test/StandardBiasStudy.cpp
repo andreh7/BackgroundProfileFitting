@@ -601,6 +601,8 @@ int main(int argc, char* argv[]){
   cout << "Done." << endl;
   cout << "Whole process took..." << endl;
   cout << "\t "; sw.Print();
+
+  testModel.printTimingStatistics();
  
   outFile->Close();
 

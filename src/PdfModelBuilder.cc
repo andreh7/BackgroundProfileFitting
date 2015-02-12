@@ -640,6 +640,7 @@ void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool
 
     fit = (RooFitResult*)it->second->fitTo(*data,fitOptions);//, RooFit::Minimizer("Minuit2"));
 
+    this->fitTimings.start(it->second->GetName());
     if (print){
       cout << "Fit Res Before: " << endl;
       fit->floatParsInit().Print("v");
@@ -908,4 +909,10 @@ void PdfModelBuilder::saveWorkspace(string filename){
 void PdfModelBuilder::saveWorkspace(TFile *file){
   file->cd();
   wsCache->Write();
+}
+
+void 
+PdfModelBuilder::printTimingStatistics(std::ostream &os)
+{
+  fitTimings.print(os);
 }
