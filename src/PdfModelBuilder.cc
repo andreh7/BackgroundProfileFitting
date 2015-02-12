@@ -666,7 +666,12 @@ void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool
       fit->floatParsFinal().Print("v");
     }
     
-    if (fit->status()==0 && cache) {
+    if (
+	// commented out to have plots also for bad fits
+	//fit->status()==0 
+	// && 
+	cache
+	) {
       RooArgSet *fitargs = (RooArgSet*)it->second->getParameters(*obs_var);
       fit->SetName(Form("%s_fitResult",it->first.c_str()));
       //wsCache->import(*data, RecycleConflictNodes());
