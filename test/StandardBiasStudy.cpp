@@ -106,6 +106,29 @@ void printOptionsMap(vector<pair<int,pair<string,string> > > opts){
   }
 }
 
+//----------------------------------------------------------------------
+
+void makeSBPdfs(PdfModelBuilder &model, int cat, bool cache)
+{
+  double xmin = 0, xmax = 1e6, xinit = 50000;
+  // category dependent ranges for the background yield (tuned for Hemu analysis)
+  if (cat == 10)
+  {
+    xmin = 10;
+    xmax = 100;
+    xinit = (xmin + xmax) * 0.5;
+  }
+  if (cat == 9)
+  {
+    xmax = 10;
+    xinit = (xmin + xmax) * 0.5;
+  }
+
+  model.makeSBPdfs(xinit, xmin, xmax, true);
+}
+
+//----------------------------------------------------------------------
+
 int main(int argc, char* argv[]){
 
   string bkgFileName;
@@ -388,6 +411,9 @@ int main(int argc, char* argv[]){
   toysModel.setSignalPdfFromMC(sigMC);// MATTEO WAS
   //toysModel.setSignalPdf(sigPdf);// MATTEO WAS NOT
   toysModel.makeSBPdfs(true);
+
+  makeSBPdfs(toysModel, cat, true);
+
   map<string,RooAbsPdf*> toyBkgPdfs = toysModel.getBkgPdfs();
   map<string,RooAbsPdf*> toySBPdfs = toysModel.getSBPdfs();
   toysModel.setSeed(seed);
@@ -403,6 +429,8 @@ int main(int argc, char* argv[]){
   testModel.setSignalPdfFromMC(sigMC); // MATTEO WAS
   //testModel.setSignalPdf(sigPdf);// MATTEO WAS NOT
   testModel.makeSBPdfs(false);
+  makeSBPdfs(testModel, cat, false);
+
   map<string,RooAbsPdf*> testBkgPdfs = testModel.getBkgPdfs();
   map<string,RooAbsPdf*> testSBPdfs = testModel.getSBPdfs();
 

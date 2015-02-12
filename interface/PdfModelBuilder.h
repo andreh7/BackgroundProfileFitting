@@ -41,8 +41,7 @@ class PdfModelBuilder {
     void setSignalPdf(RooAbsPdf *pdf, RooRealVar *norm=NULL);
     void setSignalPdfFromMC(RooDataSet *data);
     void setSignalPdfFromMC(RooDataHist *data);
-    void makeSBPdfs(bool cache=true);
-
+    void makeSBPdfs(double bkgYieldInitial, double bkgYieldMin, double bkgYieldMax, bool cache =true);
 
     map<string,RooAbsPdf*> getBkgPdfs();
     map<string,RooAbsPdf*> getSBPdfs();

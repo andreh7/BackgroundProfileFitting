@@ -498,7 +498,7 @@ void PdfModelBuilder::setSignalPdfFromMC(RooDataSet *data){
   signal_set=true;
 }
 
-void PdfModelBuilder::makeSBPdfs(bool cache){
+void PdfModelBuilder::makeSBPdfs(double bkgYieldInitial, double bkgYieldMin, double bkgYieldMax, bool cache){
   
   if (!signal_set){
     cerr << "ERROR - no signal model set!" << endl;
@@ -515,7 +515,9 @@ void PdfModelBuilder::makeSBPdfs(bool cache){
   else {
     sigYield = signalModifier;
   }
-  bkgYield = new RooRealVar("bkg_yield","bkg_yield",50000., 0.,1.e6);
+
+  // TODO: this is a memory leak !
+  bkgYield = new RooRealVar("bkg_yield","bkg_yield", bkgYieldInitial, bkgYieldMin, bkgYieldMax);
 
   for (map<string,RooAbsPdf*>::iterator bkg=bkgPdfs.begin(); bkg!=bkgPdfs.end(); bkg++){
     RooAbsPdf *sbMod = new RooAddPdf(Form("sb_%s",bkg->first.c_str()),Form("sb_%s",bkg->first.c_str()),RooArgList(*(bkg->second),*sigPdf),RooArgList(*bkgYield,*sigYield));
